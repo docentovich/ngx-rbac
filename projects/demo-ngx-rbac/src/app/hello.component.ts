@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
 import { creatRule, Dictionary, DoProvideRulesComponent, DoRoleType, DoRuleType } from '@do/ngx-rbac';
 import { AppComponent } from './app.component';
 import { Subject } from 'rxjs';
@@ -26,19 +26,12 @@ import { takeUntil } from 'rxjs/operators';
 
     <hr />
   `,
-  styles: [
-    `
-      h1 {
-        font-family: Lato;
-      }
-    `,
-  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HelloComponent implements OnInit, OnDestroy {
   public static rules1: Dictionary<DoRuleType> = {
     GUEST_CAN: creatRule([AppComponent.guest]),
     ADMIN_CAN: creatRule([AppComponent.admin]),
-    // MODER_CAN: new DoRule('MODER_CAN', [HelloComponent.moder]),
   };
 
   public static inheritedRules: Dictionary<DoRuleType> = {

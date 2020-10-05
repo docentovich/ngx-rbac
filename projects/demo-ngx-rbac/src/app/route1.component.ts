@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
 import { DoProvideRulesComponent } from '@do/ngx-rbac';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -10,13 +10,7 @@ import { takeUntil } from 'rxjs/operators';
     <hr />
     <a routerLink='/'>home</a><br>
   `,
-  styles: [
-    `
-      h1 {
-        font-family: Lato;
-      }
-    `,
-  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Route1Component implements OnInit, OnDestroy {
   protected destroy$ = new Subject<void>();
