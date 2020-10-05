@@ -2,6 +2,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Optional,
   SimpleChanges,
@@ -11,6 +12,9 @@ import { ProvideRulesService } from '../service/provide-rules.service';
 import { Dictionary } from '../type/dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { GlobalRulesService } from '../service/global-rules.service';
 
 @Component({
   selector: 'do-provide-rules',
@@ -18,45 +22,73 @@ import { DoRoleType } from '../type/do-role-type';
   styles: [],
   providers: [ProvideRulesService],
 })
-export class DoProvideRulesComponent implements OnInit, OnChanges {
+export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() guardRules: Dictionary<DoRuleType> = {};
   @Input() rules: Dictionary<DoRuleType> = {};
-  @Input() roles: DoRoleType[] = [];
-  rulesDictionary: Dictionary<DoRuleType> = {};
-  userRolesArray: DoRoleType[] = [];
+  @Input() roles: DoRoleType[];
+  rulesComputed: Dictionary<DoRuleType> = {};
+  userRolesComputed: DoRoleType[] = [];
+  protected destroy$ = new Subject<void>();
 
   constructor(
     @Optional()
     @SkipSelf()
     private source: DoProvideRulesComponent,
-    public provideRulesService: ProvideRulesService
+    public provideRulesService: ProvideRulesService,
+    private globalRulesService: GlobalRulesService
   ) {}
 
   ngOnInit(): void {
-    this.chainRules(this.rules, this.roles);
+    this.source?.provideRulesService
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ rules, userRoles }) => {
+        this.concatRules(this.rules, this.roles);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.chainRules(
-      changes.rules.currentValue,
-      changes.roles?.currentValue || []
-    );
+    if (
+      changes.rules?.currentValue !== changes.rules?.previousValue ||
+      changes.roles?.currentValue !== changes.roles?.previousValue
+    ) {
+      this.concatRules(
+        changes.rules?.currentValue || this.rules || {},
+        changes.roles?.currentValue
+      );
+    }
+
+    if (
+      changes.guardRules?.currentValue !== changes.guardRules?.previousValue
+    ) {
+      this.addGuardRules(changes.guardRules?.currentValue);
+    }
   }
 
-  can(value: DoRuleType, args: any[]): any {
-    return this.provideRulesService.can(value, args);
+  can(ruleName: string, args: any[]): any {
+    return this.provideRulesService.can(ruleName, args);
   }
 
-  private chainRules(
+  private concatRules(
     rules: Dictionary<DoRuleType>,
     userRoles: DoRoleType[]
   ): void {
-    this.userRolesArray = (userRoles || []);
-    this.rulesDictionary = {
+    this.userRolesComputed = userRoles || this.source?.roles || [];
+    this.rulesComputed = {
       ...(rules || {}),
-      ...(this.source?.rulesDictionary || {}),
+      ...(this.source?.rules || {}),
     };
 
-    this.provideRulesService.addRules(this.rulesDictionary);
-    this.provideRulesService.addRoles(this.userRolesArray);
+    this.provideRulesService.nextRulesAndRoles(
+      this.rules,
+      this.userRolesComputed
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+  }
+
+  private addGuardRules(rules: Dictionary<DoRuleType>) {
+    this.globalRulesService.addGuardRules(rules);
   }
 }

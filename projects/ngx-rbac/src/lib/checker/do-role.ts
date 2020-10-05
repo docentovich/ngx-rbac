@@ -2,7 +2,7 @@ import { DoChecker } from './do-checker';
 import { DoRoleType } from '../type/do-role-type';
 import { Dependency } from '../type/dependency';
 
-export class DoRole extends DoChecker {
+export class DoRole extends DoChecker implements DoRoleType  {
   public canRoles: string[];
   constructor(name: string, public inheritedRole?: DoRoleType) {
     super(

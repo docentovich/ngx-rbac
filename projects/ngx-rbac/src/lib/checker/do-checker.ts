@@ -1,8 +1,11 @@
 import { checkerFunction } from '../type/checker-function';
-import { DoCheckerType } from '@do/ngx-rbac';
+import { DoCheckerType } from '../type/do-checker-type';
 
-export class DoChecker {
-  constructor(public check: checkerFunction, public name: string = 'no-name') {
+export class DoChecker implements DoCheckerType {
+  constructor(public check: checkerFunction, public name: string = 'no-name-checker') {}
+
+  setName(name: string): void {
+    this.name = name;
   }
 }
 

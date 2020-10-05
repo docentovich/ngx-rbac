@@ -1,32 +1,52 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
 import { GlobalRulesService } from './global-rules.service';
 import { Dictionary } from '../type/dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
+import { commonCan } from '../helper/common-can';
 
 @Injectable()
-export class ProvideRulesService {
-  rulesDictionary: Dictionary<DoRuleType>;
-  userRolesArray: DoRoleType[];
+export class ProvideRulesService extends BehaviorSubject<{
+  rules: Dictionary<DoRuleType>;
+  userRoles: DoRoleType[];
+  can: (ruleName: string, args?: any[]) => boolean;
+}> {
+  rules: Dictionary<DoRuleType>;
+  userRoles: DoRoleType[];
 
-  constructor(private globalRulesService: GlobalRulesService) {}
-
-  addRules(rulesDictionary: Dictionary<DoRuleType>) {
-    this.globalRulesService.addRulesDictionary(rulesDictionary);
-    this.rulesDictionary = rulesDictionary;
+  constructor(private globalRulesService: GlobalRulesService) {
+    super({
+      rules: null,
+      userRoles: null,
+      can: () => {
+        throw Error('Can method should be initialized');
+      },
+    });
   }
 
-  addRoles(userRolesArray: DoRoleType[]) {
-    this.globalRulesService.addRoles(userRolesArray);
-    this.userRolesArray = userRolesArray;
+  can(ruleName: string, args?: any[]): any {
+    return commonCan([this.userRoles], this.rules, ruleName, args);
   }
 
-  can(value: DoRuleType, args: any[]): any {
-    return GlobalRulesService.commonCan(
-      value,
-      this.rulesDictionary,
-      args,
-      [this.userRolesArray]
-    );
+  nextRulesAndRoles(rules: Dictionary<DoRuleType>, userRoles: DoRoleType[]) {
+    this.addRules(rules);
+    this.addRoles(userRoles);
+    this.next({
+      rules,
+      userRoles,
+      can: commonCan.bind(null, [userRoles], rules),
+    });
+  }
+
+  private addRules(rules: Dictionary<DoRuleType>) {
+    Object.entries(rules).forEach(([name, rule]) => rule.setName(name));
+    this.rules = rules;
+  }
+
+  private addRoles(userRoles: DoRoleType[]) {
+    this.globalRulesService.addRoles(userRoles);
+    this.userRoles = userRoles;
   }
 }

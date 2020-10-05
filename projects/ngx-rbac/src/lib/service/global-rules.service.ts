@@ -2,44 +2,25 @@ import { Injectable } from '@angular/core';
 import { Dictionary } from '../type/dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
-import { Dependency } from '../type/dependency';
+import { commonCan } from '../helper/common-can';
 
 @Injectable()
 export class GlobalRulesService {
-  rulesDictionary: Dictionary<DoRuleType>;
-  userRolesArray: DoRoleType[];
+  rules: Dictionary<DoRuleType> = {};
+  userRoles: DoRoleType[] = [];
 
-  public static commonCan(
-    value: DoRuleType,
-    rulesDictionary: Dictionary<DoRuleType>,
-    args: any[],
-    dependency: Dependency,
-  ): any {
-    if (! Object.values(rulesDictionary).find(r => r.name === value.name)) {
-      console.error('no rule for ' + (value?.name || 'undefined'));
-      return;
-    }
-
-    return value.check(args, dependency);
-  }
-
-  addRulesDictionary(rulesDictionary: Dictionary<DoRuleType>) {
-    this.rulesDictionary = {
-      ...(this.rulesDictionary || {}),
-      ...(rulesDictionary || {}),
+  addGuardRules(rules: Dictionary<DoRuleType>) {
+    this.rules = {
+      ...(this.rules || {}),
+      ...(rules || {}),
     };
   }
 
-  addRoles(userRolesArray: DoRoleType[]) {
-    this.userRolesArray = [...(this.userRolesArray || []), ...(userRolesArray || [])];
+  addRoles(userRoles: DoRoleType[]) {
+    this.userRoles = userRoles;
   }
 
-  can(value: DoRuleType, ...args: any[]): any {
-    return GlobalRulesService.commonCan(
-      value,
-      this.rulesDictionary,
-      args,
-      [this.userRolesArray]
-    );
+  can(ruleName: string, ...args: any[]): any {
+    return commonCan([this.userRoles], this.rules, ruleName, args);
   }
 }

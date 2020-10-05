@@ -7,8 +7,8 @@ import { DoRoleType } from '../type/do-role-type';
 import { DoRuleType } from '../type/do-rule-type';
 import { Dependency } from '../type/dependency';
 
-export class DoRule extends DoChecker {
-  static doCheckerFactory(
+export class DoRule extends DoChecker implements DoRuleType {
+  static checkerFactory(
     checkers: Array<checkerFunction | DoCheckerType>
   ): checkerFunction {
     if (!Array.isArray(checkers)) {
@@ -51,14 +51,16 @@ export class DoRule extends DoChecker {
       chainCheckers.check(args, dependency);
   }
 
-  constructor(checkers: Array<checkerFunction | DoCheckerType>, name: string) {
-    super(DoRule.doCheckerFactory(checkers), name);
+  constructor(
+    checkers: Array<checkerFunction | DoCheckerType>,
+    name: string = 'no-name-rule-checker'
+  ) {
+    super(DoRule.checkerFactory(checkers), name);
   }
 }
 
 export function creatRule(
-  name: string,
   args: Array<DoRuleType | DoRoleType | checkerFunction>
 ): DoRuleType {
-  return new DoRule(args, name);
+  return new DoRule(args);
 }
