@@ -11,10 +11,11 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@do/ngx-rbac": ["projects/ngx-rbac/src/public_api"],
+      "ngx-rbac": ["dist/ngx-rbac/ngx-rbac", "dist/ngx-rbac"]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
