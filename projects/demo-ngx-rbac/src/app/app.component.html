@@ -1,4 +1,8 @@
-<router-outlet></router-outlet>
+<button (click)="myRoles = [admin]">Set as admin</button>
+<button (click)="myRoles = [guest]">Set as guest</button>
+<button (click)="doNothing()">do nothing</button>
 
-admin: <a routerLink='/second'>second</a><br>
-nonadmin: <a routerLink='/second1'>second1</a><br>
+<do-provide-rules [rules]="rules" [roles]="myRoles" [guardRules]="rules">
+  <router-outlet></router-outlet>
+</do-provide-rules>
+

@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HelloComponent } from './hello.component';
 import { NgxRbacModule } from '@do/ngx-rbac';
+import { Route1Component } from './route1.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HelloComponent
+    HelloComponent,
+    Route1Component
   ],
   imports: [
     BrowserModule,
