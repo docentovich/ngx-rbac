@@ -23,8 +23,9 @@ import { takeUntil } from 'rxjs/operators';
     </do-provide-rules>
 
     <hr />
-    <hr />
-    <a routerLink='/route1'>route1</a><br>
+    <a routerLink='/route1'>only admin</a><br>
+    <a routerLink='/route2'>only guest</a><br>
+    <a routerLink='/route3'>guest and admin</a><br>
 
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

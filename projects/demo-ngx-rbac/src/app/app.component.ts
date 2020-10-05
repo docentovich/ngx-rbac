@@ -3,6 +3,7 @@ import {
   creatRole,
   creatRule,
   Dictionary,
+  doNot,
   DoRoleType,
   DoRuleType,
 } from '@do/ngx-rbac';
@@ -11,7 +12,7 @@ import {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   public static guest: DoRoleType = creatRole('GUEST');
@@ -19,13 +20,14 @@ export class AppComponent {
 
   public static rules: Dictionary<DoRuleType> = {
     GUARD_RULE: creatRule([AppComponent.admin]),
+    GUEST_and_ADMIN: creatRule([AppComponent.guest]),
+    ONLY_GUEST: creatRule([AppComponent.guest, doNot(AppComponent.admin)]),
   };
   rules: Dictionary<DoRuleType> = AppComponent.rules;
 
   guest: DoRoleType = AppComponent.guest;
   admin: DoRoleType = AppComponent.admin;
   myRoles = [this.admin];
-
 
   doNothing() {
     console.log('doNothing');
