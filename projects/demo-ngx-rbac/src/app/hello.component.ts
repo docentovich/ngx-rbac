@@ -22,9 +22,10 @@ import { takeUntil } from 'rxjs/operators';
       inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 2:2 }}<br />
     </do-provide-rules>
 
+    <hr />
+    <hr />
     <a routerLink='/route1'>route1</a><br>
 
-    <hr />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

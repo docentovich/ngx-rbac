@@ -1,6 +1,6 @@
-import { creatChecker, DoChecker } from './do-checker';
+import { DoChecker } from './do-checker';
 import { checkerFunction } from '../type/checker-function';
-import { and, or } from '../helper/logic-operator';
+import { doAnd, doOr } from '../helper/logic-operator';
 import { DoRole } from '../checker/do-role';
 import { DoCheckerType } from '../type/do-checker-type';
 import { DoRoleType } from '../type/do-role-type';
@@ -11,41 +11,17 @@ export class DoRule extends DoChecker implements DoRuleType {
   static checkerFactory(
     checkers: Array<checkerFunction | DoCheckerType>
   ): checkerFunction {
-    if (!Array.isArray(checkers)) {
-      throw Error('checkers must be of array type');
-    }
-
-    checkers.forEach((checker, index) => {
-      if ((checker as DoRoleType) instanceof DoChecker) {
-        return;
+    const elseCheckers: Array<DoRuleType | checkerFunction> = [];
+    const roleCheckers: DoRoleType[] = [];
+    checkers.forEach((checker) => {
+      if (checker instanceof DoRole) {
+        roleCheckers.push(checker);
+      } else {
+        elseCheckers.push(checker);
       }
-      return (checkers[index] = creatChecker(
-        'simple-checker',
-        checker as checkerFunction
-      ));
     });
 
-    const roleCheckers: DoRoleType[] = checkers.filter(
-      (checker) => (checker as DoRuleType) instanceof DoRole
-    ) as DoRoleType[];
-
-    const simpleCheckerCheckers: DoRoleType[] = checkers.filter(
-      (checker) =>
-        (checker as DoRoleType) instanceof DoChecker &&
-        !(
-          (checker as DoRuleType) instanceof DoRule ||
-          (checker as DoRuleType) instanceof DoRole
-        )
-    ) as DoRoleType[];
-
-    const ruleCheckers: DoRuleType[] = checkers.filter(
-      (checker) => (checker as DoRuleType) instanceof DoRule
-    ) as DoRuleType[];
-
-    const chainCheckers = and([
-      or(roleCheckers),
-      and([...ruleCheckers, ...simpleCheckerCheckers]),
-    ]);
+    const chainCheckers = doAnd([doOr(roleCheckers), doAnd(elseCheckers)]);
 
     return (args: any[], dependency: Dependency) =>
       chainCheckers.check(args, dependency);
