@@ -1,3 +1,3 @@
-import { DoRoleType } from '@do/ngx-rbac';
+import { DoRoleType, DoRuleType, StringDictionary } from '@do/ngx-rbac';
 
-export type Dependency = [DoRoleType[]];
+export type Dependency = [DoRoleType[], StringDictionary<DoRuleType>];

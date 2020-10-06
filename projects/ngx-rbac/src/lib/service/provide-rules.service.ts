@@ -22,6 +22,9 @@ export class ProvideRulesService implements OnDestroy {
   public get localRulesValue(): StringDictionary<DoRuleType> {
     return this._rules$.value;
   }
+  public get mergedRulesValue(): StringDictionary<DoRuleType> {
+    return { ...this.globalRulesService.rulesValue, ...this.localRulesValue };
+  }
   public get userRolesValue(): DoRoleType[] {
     return this.globalRulesService.userRolesValue;
   }
@@ -52,8 +55,11 @@ export class ProvideRulesService implements OnDestroy {
 
   can(ruleName: string, args?: any[]): any {
     return commonCan(
-      [this.globalRulesService.userRolesValue],
-      { ...this.globalRulesService.rulesValue, ...this.localRulesValue },
+      [
+        this.globalRulesService.userRolesValue,
+        this.mergedRulesValue,
+      ],
+      this.mergedRulesValue,
       ruleName,
       args
     );

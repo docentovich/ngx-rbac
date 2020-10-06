@@ -1,4 +1,8 @@
-import { creatChecker, DoChecker } from '../checker/do-checker';
+import {
+  creatChecker,
+  creatStringChecker,
+  DoChecker,
+} from '../checker/do-checker';
 import { DoCheckerType } from '../type/do-checker-type';
 import { Dependency } from '../type/dependency';
 import { CheckerFunction } from '../type/checker-function';
@@ -49,14 +53,14 @@ export function doNot(
   ];
 }
 
-function anyCheckerToDoChecker(
-  checkers: Array<DoCheckerType | CheckerFunction>
-): DoChecker[] {
+function anyCheckerToDoChecker(checkers: AllPossibleCheckers[]): DoChecker[] {
   return checkers
     .filter((chk) => !!chk)
     .map((checker) =>
       checker instanceof DoChecker
         ? checker
-        : new DoChecker(checker as CheckerFunction, name)
+        : typeof checker === 'string'
+          ? creatStringChecker(checker)
+          : creatChecker(name, checker as CheckerFunction)
     );
 }

@@ -19,3 +19,12 @@ export function creatChecker(
 ): DoCheckerType {
   return new DoChecker(checker, name);
 }
+
+export function creatStringChecker(checkerName: string): DoCheckerType {
+  return creatChecker('string-checker', (args, [userRoles, rulesSnapshot]) => {
+    if (!rulesSnapshot[checkerName]) {
+      throw Error('No rule for ' + checkerName);
+    }
+    return rulesSnapshot[checkerName].check(args, [userRoles, rulesSnapshot]);
+  });
+}

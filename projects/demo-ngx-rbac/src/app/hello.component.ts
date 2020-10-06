@@ -33,12 +33,13 @@ export class HelloComponent implements OnInit, OnDestroy {
   public static rules1 = creatRuleSet({
     GUEST_CAN: [AppComponent.guest],
     ADMIN_CAN: [AppComponent.admin],
+    CHAIN_WITH_STRING_RULE: [AppComponent.admin],
   });
 
   public static inheritedRules = creatRuleSet({
     inherited_ADMIN_CAN: [
       HelloComponent.rules1.ADMIN_CAN,
-      ([arg1, arg2], [userRoles]: [DoRoleType[]]) => {
+      ([arg1, arg2], [userRoles]) => {
         return arg1 === arg2;
       },
     ],

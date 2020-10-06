@@ -11,7 +11,7 @@ export class DoRule extends DoChecker implements DoRuleType {
   static checkerFactory(
     checkers: Array<CheckerFunction | DoCheckerType>
   ): CheckerFunction {
-    const elseCheckers: Array<DoRuleType | CheckerFunction> = [];
+    const elseCheckers: Array<DoRuleType | CheckerFunction | string> = [];
     const roleCheckers: DoRoleType[] = [];
     checkers.forEach((checker) => {
       if (checker instanceof DoRole) {

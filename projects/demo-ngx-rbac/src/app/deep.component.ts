@@ -26,6 +26,24 @@ export class DeepComponent {
       HelloComponent.inheritedRules.inherited_ADMIN_CAN,
       ([arg1]) => arg1 === 10,
     ],
+    CHAINED_RULE: [
+      'CHAIN_WITH_STRING_RULE',
+      (args) => {
+        return args[0] === 'cool';
+      },
+    ],
+    CHAINED_GLOBAL_RULE: [
+      'CHAIN_GLOBAL_WITH_STRING_RULE',
+      (args) => {
+        return args[0] === 'cool';
+      },
+    ],
+    CHAINED_RULE_NOT: [
+      ...doNot('CHAIN_WITH_STRING_RULE'),
+      (args) => {
+        return args[0] === 'cool';
+      },
+    ],
   });
   public static overrideRules = {
     GUEST_CAN: creatRule([() => false]),

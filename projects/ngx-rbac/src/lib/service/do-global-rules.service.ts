@@ -51,6 +51,11 @@ export class DoGlobalRulesService {
   }
 
   can(ruleName: string, ...args: any[]): any {
-    return commonCan([this._userRoles$.value], this.rulesValue, ruleName, args);
+    return commonCan(
+      [this.userRolesValue, this.rulesValue],
+      this.rulesValue,
+      ruleName,
+      args
+    );
   }
 }
