@@ -1,19 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-  Optional,
-  SkipSelf,
-} from '@angular/core';
-import {
-  creatRule,
-  Dictionary,
-  DoGlobalRulesService,
-  DoProvideRulesComponent,
-  DoRoleType,
-  DoRuleType,
-} from '@do/ngx-rbac';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
+import { creatRuleSet, DoGlobalRulesService, DoProvideRulesComponent, DoRoleType } from '@do/ngx-rbac';
 import { AppComponent } from './app.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -44,19 +30,19 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HelloComponent implements OnInit, OnDestroy {
-  public static rules1: Dictionary<DoRuleType> = {
-    GUEST_CAN: creatRule([AppComponent.guest]),
-    ADMIN_CAN: creatRule([AppComponent.admin]),
-  };
+  public static rules1 = creatRuleSet({
+    GUEST_CAN: [AppComponent.guest],
+    ADMIN_CAN: [AppComponent.admin],
+  });
 
-  public static inheritedRules: Dictionary<DoRuleType> = {
-    inherited_ADMIN_CAN: creatRule([
+  public static inheritedRules = creatRuleSet({
+    inherited_ADMIN_CAN: [
       HelloComponent.rules1.ADMIN_CAN,
       ([arg1, arg2], [userRoles]: [DoRoleType[]]) => {
         return arg1 === arg2;
       },
-    ]),
-  };
+    ],
+  });
 
   protected destroy$ = new Subject<void>();
   constructor(

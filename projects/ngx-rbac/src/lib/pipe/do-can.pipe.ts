@@ -10,6 +10,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { DoProvideRulesComponent } from '../component/do-provide-rules.component';
+import { AllPossibleCheckers } from '../type/checker-function';
+import { DoChecker } from '../checker/do-checker';
 
 @Pipe({
   name: 'doCan',
@@ -39,11 +41,17 @@ export class DoCanPipe implements PipeTransform, OnDestroy {
       });
   }
 
-  transform(ruleName: string, ...args: any[]): any {
+  transform(
+    rule: string | AllPossibleCheckers[] | AllPossibleCheckers,
+    ...args: any[]
+  ): any {
     if (!this.markForTransform) {
       return this.value;
     }
-    this.value = this.source?.provideRulesService.can(ruleName, args);
+    if (!(typeof rule === 'string' || (rule as any) instanceof DoChecker)) {
+      throw Error('Transformed value must be string or DoChecker type but get: ' + typeof rule);
+    }
+    this.value = this.source?.provideRulesService.can(rule.toString(), args);
     this.markForTransform = false;
     return this.value;
   }

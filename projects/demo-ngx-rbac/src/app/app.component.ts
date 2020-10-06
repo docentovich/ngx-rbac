@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   creatRole,
-  creatRule,
-  Dictionary,
+  creatRuleSet,
   DoGlobalRulesService,
   doNot,
   DoRoleType,
-  DoRuleType,
 } from '@do/ngx-rbac';
 
 @Component({
@@ -19,14 +17,15 @@ export class AppComponent {
   public static guest: DoRoleType = creatRole('GUEST');
   public static admin: DoRoleType = creatRole('ADMIN', AppComponent.guest);
 
-  public static rules: Dictionary<DoRuleType> = {
-    GUARD_RULE: creatRule([AppComponent.admin]),
-    GUEST_and_ADMIN: creatRule([AppComponent.guest]),
-    ONLY_GUEST: creatRule([AppComponent.guest, ...doNot(AppComponent.admin)]),
-  };
+  public static rules = creatRuleSet({
+    GUARD_RULE: [AppComponent.admin],
+    GUEST_and_ADMIN: [AppComponent.guest],
+    ONLY_GUEST: [AppComponent.guest, ...doNot(AppComponent.admin)],
+  });
   guest: DoRoleType = AppComponent.guest;
   admin: DoRoleType = AppComponent.admin;
   myRoles = [this.admin];
+  rules = AppComponent.rules;
 
   constructor(public doGlobalRulesService: DoGlobalRulesService) {
     doGlobalRulesService.addGlobalRules(AppComponent.rules);

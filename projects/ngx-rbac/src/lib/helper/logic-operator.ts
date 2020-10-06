@@ -1,10 +1,10 @@
 import { creatChecker, DoChecker } from '../checker/do-checker';
 import { DoCheckerType } from '../type/do-checker-type';
 import { Dependency } from '../type/dependency';
-import { checkerFunction } from '../type/checker-function';
+import { CheckerFunction } from '../type/checker-function';
 
 export function doAnd(
-  checkers: Array<DoCheckerType | checkerFunction>,
+  checkers: Array<DoCheckerType | CheckerFunction>,
   name = 'logical and'
 ): DoCheckerType[] {
   if (!checkers || checkers?.length === 0) {
@@ -20,7 +20,7 @@ export function doAnd(
 }
 
 export function doOr(
-  checkers: Array<DoCheckerType | checkerFunction>,
+  checkers: Array<DoCheckerType | CheckerFunction>,
   name = 'logical or'
 ): DoCheckerType[] {
   if (!checkers || checkers?.length === 0) {
@@ -36,7 +36,7 @@ export function doOr(
 }
 
 export function doNot(
-  checker: DoCheckerType | checkerFunction,
+  checker: DoCheckerType | CheckerFunction,
   name = 'logical not'
 ): DoCheckerType[] {
   if (!checker) {
@@ -50,13 +50,13 @@ export function doNot(
 }
 
 function anyCheckerToDoChecker(
-  checkers: Array<DoCheckerType | checkerFunction>
+  checkers: Array<DoCheckerType | CheckerFunction>
 ): DoChecker[] {
   return checkers
     .filter((chk) => !!chk)
     .map((checker) =>
       checker instanceof DoChecker
         ? checker
-        : new DoChecker(checker as checkerFunction, name)
+        : new DoChecker(checker as CheckerFunction, name)
     );
 }

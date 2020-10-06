@@ -1,9 +1,10 @@
-import { checkerFunction } from './checker-function';
+import { CheckerFunction } from './checker-function';
 
 export interface DoCheckerType {
-  check: checkerFunction;
+  check: CheckerFunction;
   name: string;
 
   setName(name: string): void;
+  toString(): string;
 }
 

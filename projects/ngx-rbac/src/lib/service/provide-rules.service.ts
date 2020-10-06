@@ -3,7 +3,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 
 import { DoGlobalRulesService } from './do-global-rules.service';
-import { Dictionary } from '../type/dictionary';
+import { StringDictionary } from '../type/named-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { commonCan } from '../helper/common-can';
@@ -11,13 +11,15 @@ import { commonCan } from '../helper/common-can';
 @Injectable()
 export class ProvideRulesService implements OnDestroy {
   private _rules$: BehaviorSubject<
-    Dictionary<DoRuleType>
-  > = new BehaviorSubject<Dictionary<DoRuleType>>({});
+    StringDictionary<DoRuleType>
+  > = new BehaviorSubject<StringDictionary<DoRuleType>>({});
 
   private destroy$ = new Subject<void>();
-  rules$: Observable<Dictionary<DoRuleType>> = this._rules$.asObservable();
+  rules$: Observable<
+    StringDictionary<DoRuleType>
+  > = this._rules$.asObservable();
 
-  public get localRulesValue(): Dictionary<DoRuleType> {
+  public get localRulesValue(): StringDictionary<DoRuleType> {
     return this._rules$.value;
   }
   public get userRolesValue(): DoRoleType[] {
@@ -57,7 +59,7 @@ export class ProvideRulesService implements OnDestroy {
     );
   }
 
-  nextRules(rules: Dictionary<DoRuleType>) {
+  nextRules(rules: StringDictionary<DoRuleType>) {
     DoGlobalRulesService.nameRules(rules);
     this._rules$.next(rules);
   }

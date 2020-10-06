@@ -9,15 +9,15 @@ import {
 import { Subject } from 'rxjs';
 
 import { ProvideRulesService } from '../service/provide-rules.service';
-import { Dictionary } from '../type/dictionary';
+import { StringDictionary } from '../type/named-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { DoGlobalRulesService } from '../service/do-global-rules.service';
 import { TypedSimpleChanges } from '../type/typed-simple-changes';
 
 interface IDoProvideRulesComponent {
-  globalRules: Dictionary<DoRuleType>;
-  rules: Dictionary<DoRuleType>;
+  globalRules: StringDictionary<DoRuleType>;
+  rules: StringDictionary<DoRuleType>;
   roles: DoRoleType[];
 }
 
@@ -29,11 +29,11 @@ interface IDoProvideRulesComponent {
 })
 export class DoProvideRulesComponent
   implements OnChanges, IDoProvideRulesComponent, OnDestroy {
-  @Input() globalRules: Dictionary<DoRuleType> = {};
-  @Input() rules: Dictionary<DoRuleType> = {};
+  @Input() globalRules: StringDictionary<DoRuleType> = {};
+  @Input() rules: StringDictionary<DoRuleType> = {};
   @Input() roles: DoRoleType[];
 
-  rulesComputed: Dictionary<DoRuleType> = {};
+  rulesComputed: StringDictionary<DoRuleType> = {};
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -71,7 +71,7 @@ export class DoProvideRulesComponent
     return this.provideRulesService.can(ruleName, args);
   }
 
-  private concatRules(rules: Dictionary<DoRuleType>): void {
+  private concatRules(rules: StringDictionary<DoRuleType>): void {
     this.rulesComputed = {
       ...(this.source?.rulesComputed || {}),
       ...(rules || {}),
