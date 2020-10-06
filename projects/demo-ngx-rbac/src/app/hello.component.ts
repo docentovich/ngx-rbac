@@ -57,7 +57,7 @@ export class HelloComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(
       'static ' +
-        this.source?.provideRulesService.userRoles[0]?.name +
+        this.source?.provideRulesService.value.userRoles[0]?.name +
         ' can GUARD_RULE ' +
         this.source?.provideRulesService.can('GUARD_RULE')
     );

@@ -2,7 +2,7 @@
 <button (click)="myRoles = [guest]">Set as guest</button>
 <button (click)="doNothing()">do nothing</button>
 
-<do-provide-rules [rules]="rules" [roles]="myRoles" [guardRules]="rules">
+<do-provide-rules [roles]="myRoles">
   <router-outlet></router-outlet>
 </do-provide-rules>
 

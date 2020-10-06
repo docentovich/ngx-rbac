@@ -21,10 +21,9 @@ export class DoRule extends DoChecker implements DoRuleType {
       }
     });
 
-    const chainCheckers = doAnd([doOr(roleCheckers), doAnd(elseCheckers)]);
+    const chainCheckers = doAnd([...doOr(roleCheckers), ...doAnd(elseCheckers)]);
 
-    return (args: any[], dependency: Dependency) =>
-      chainCheckers.check(args, dependency);
+    return chainCheckers[0].check;
   }
 
   constructor(

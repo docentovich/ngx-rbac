@@ -6,32 +6,47 @@ import { checkerFunction } from '../type/checker-function';
 export function doAnd(
   checkers: Array<DoCheckerType | checkerFunction>,
   name = 'logical and'
-): DoCheckerType {
-  return creatChecker(name, (args: any[], dependency: Dependency) => {
-    return anyCheckerToDoChecker(checkers).every((checker) =>
-      checker.check(args, dependency)
-    );
-  });
+): DoCheckerType[] {
+  if (!checkers || checkers?.length === 0) {
+    return [];
+  }
+  return [
+    creatChecker(name, (args: any[], dependency: Dependency) => {
+      return anyCheckerToDoChecker(checkers).every((checker) =>
+        checker.check(args, dependency)
+      );
+    }),
+  ];
 }
 
 export function doOr(
   checkers: Array<DoCheckerType | checkerFunction>,
   name = 'logical or'
-): DoCheckerType {
-  return creatChecker(name, (args: any[], dependency: Dependency) => {
-    return anyCheckerToDoChecker(checkers).some((checker) =>
-      checker.check(args, dependency)
-    );
-  });
+): DoCheckerType[] {
+  if (!checkers || checkers?.length === 0) {
+    return [];
+  }
+  return [
+    creatChecker(name, (args: any[], dependency: Dependency) => {
+      return anyCheckerToDoChecker(checkers).some((checker) =>
+        checker.check(args, dependency)
+      );
+    }),
+  ];
 }
 
 export function doNot(
   checker: DoCheckerType | checkerFunction,
   name = 'logical not'
-): DoCheckerType {
-  return creatChecker(name, (args: any[], dependency: Dependency) => {
-    return !anyCheckerToDoChecker([checker])[0].check(args, dependency);
-  });
+): DoCheckerType[] {
+  if (!checker) {
+    return [];
+  }
+  return [
+    creatChecker(name, (args: any[], dependency: Dependency) => {
+      return !anyCheckerToDoChecker([checker])[0].check(args, dependency);
+    }),
+  ];
 }
 
 function anyCheckerToDoChecker(

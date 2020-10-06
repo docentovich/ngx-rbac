@@ -3,6 +3,7 @@ import {
   creatRole,
   creatRule,
   Dictionary,
+  DoGlobalRulesService,
   doNot,
   DoRoleType,
   DoRuleType,
@@ -21,13 +22,15 @@ export class AppComponent {
   public static rules: Dictionary<DoRuleType> = {
     GUARD_RULE: creatRule([AppComponent.admin]),
     GUEST_and_ADMIN: creatRule([AppComponent.guest]),
-    ONLY_GUEST: creatRule([AppComponent.guest, doNot(AppComponent.admin)]),
+    ONLY_GUEST: creatRule([AppComponent.guest, ...doNot(AppComponent.admin)]),
   };
-  rules: Dictionary<DoRuleType> = AppComponent.rules;
-
   guest: DoRoleType = AppComponent.guest;
   admin: DoRoleType = AppComponent.admin;
   myRoles = [this.admin];
+
+  constructor(doGlobalRulesService: DoGlobalRulesService) {
+    doGlobalRulesService.addGlobalRules(AppComponent.rules);
+  }
 
   doNothing() {
     console.log('doNothing');

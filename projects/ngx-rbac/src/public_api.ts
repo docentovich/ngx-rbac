@@ -4,7 +4,7 @@ export { DoProvideRulesComponent } from './lib/component/do-provide-rules.compon
 export { DoCanGuard } from './lib/guard/do-can.guard';
 export { doAnd, doOr, doNot } from './lib/helper/logic-operator';
 export { DoCanPipe } from './lib/pipe/do-can.pipe';
-export { GlobalRulesService } from './lib/service/global-rules.service';
+export { DoGlobalRulesService } from './lib/service/do-global-rules.service';
 export { NgxRbacModule } from './lib/ngx-rbac.module';
 
 export { creatRule } from './lib/checker/do-rule';

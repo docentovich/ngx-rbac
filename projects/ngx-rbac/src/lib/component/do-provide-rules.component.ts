@@ -14,7 +14,7 @@ import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { GlobalRulesService } from '../service/global-rules.service';
+import { DoGlobalRulesService } from '../service/do-global-rules.service';
 
 @Component({
   selector: 'do-provide-rules',
@@ -23,7 +23,7 @@ import { GlobalRulesService } from '../service/global-rules.service';
   providers: [ProvideRulesService],
 })
 export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() guardRules: Dictionary<DoRuleType> = {};
+  @Input() globalRules: Dictionary<DoRuleType> = {};
   @Input() rules: Dictionary<DoRuleType> = {};
   @Input() roles: DoRoleType[];
   rulesComputed: Dictionary<DoRuleType> = {};
@@ -35,7 +35,7 @@ export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
     @SkipSelf()
     private source: DoProvideRulesComponent,
     public provideRulesService: ProvideRulesService,
-    private globalRulesService: GlobalRulesService
+    private globalRulesService: DoGlobalRulesService
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +47,7 @@ export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // todo think about split rules and roles adding logic
     if (
       changes.rules?.currentValue !== changes.rules?.previousValue ||
       changes.roles?.currentValue !== changes.roles?.previousValue
@@ -58,9 +59,10 @@ export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (
+      changes.guardRules?.currentValue &&
       changes.guardRules?.currentValue !== changes.guardRules?.previousValue
     ) {
-      this.addGuardRules(changes.guardRules?.currentValue);
+      this.globalRulesService.addGlobalRules(changes.guardRules?.currentValue);
     }
   }
 
@@ -86,9 +88,5 @@ export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroy$.next();
-  }
-
-  private addGuardRules(rules: Dictionary<DoRuleType>) {
-    this.globalRulesService.addGuardRules(rules);
   }
 }
