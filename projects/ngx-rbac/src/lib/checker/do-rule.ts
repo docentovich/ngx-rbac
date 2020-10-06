@@ -2,7 +2,6 @@ import { DoChecker } from './do-checker';
 import { AllPossibleCheckers, CheckerFunction } from '../type/checker-function';
 import { doAnd, doOr } from '../helper/logic-operator';
 import { DoRole } from '../checker/do-role';
-import { DoCheckerType } from '../type/do-checker-type';
 import { DoRoleType } from '../type/do-role-type';
 import { DoRuleType } from '../type/do-rule-type';
 import { NamedDictionary } from '../type/named-dictionary';
@@ -61,7 +60,8 @@ export function creatRuleSet<T extends {
     [key: string]: AllPossibleCheckers[];
   }>(args: T, options?: DoRuleOptions): NamedDictionary<T, DoRule> {
   return Object.entries(args).reduce((acc, [name, checker]) => {
-    acc[name] = new DoRule(checker, name);
+    acc[name] = creatRule(checker, options);
+    acc[name].setName(name);
     return acc;
   }, {} as any);
 }
