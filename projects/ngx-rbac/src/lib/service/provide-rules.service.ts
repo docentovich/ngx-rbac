@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { map, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 
 import { DoGlobalRulesService } from './do-global-rules.service';
 import { Dictionary } from '../type/dictionary';
@@ -8,60 +9,64 @@ import { DoRoleType } from '../type/do-role-type';
 import { commonCan } from '../helper/common-can';
 
 @Injectable()
-// @ts-ignore
-// todo instead of extends BehaviorSubject use property
-// because merging with global rules and dependency will not propagate  inside subscription,
-// implement change$ [globalRules, localRules, globalRoles] in order to simplify communication with pipe
-// do not forget to use destroy$
-export class ProvideRulesService extends BehaviorSubject<{
-  rules: Dictionary<DoRuleType>;
-  userRoles: DoRoleType[];
-  can: (ruleName: string, args?: any[]) => boolean;
-}> {
-  rules: Dictionary<DoRuleType>;
+export class ProvideRulesService implements OnDestroy {
+  private _rules$: BehaviorSubject<
+    Dictionary<DoRuleType>
+  > = new BehaviorSubject<Dictionary<DoRuleType>>({});
 
-  constructor(private globalRulesService: DoGlobalRulesService) {
-    super({
-      rules: null,
-      userRoles: null,
-      can: () => {
-        throw Error('Can method should be initialized');
-      },
-    });
+  private destroy$ = new Subject<void>();
+  rules$: Observable<Dictionary<DoRuleType>> = this._rules$.asObservable();
+
+  public get localRulesValue(): Dictionary<DoRuleType> {
+    return this._rules$.value;
   }
+  public get userRolesValue(): DoRoleType[] {
+    return this.globalRulesService.userRolesValue;
+  }
+
+  changes$ = combineLatest([
+    this.rules$,
+    this.globalRulesService.changes$,
+  ]).pipe(
+    takeUntil(this.destroy$),
+    map(([localRules, [globalRules, userRoles]]) => ({
+      rules: {
+        ...globalRules,
+        ...localRules,
+      },
+      userRoles,
+    }))
+  );
+
+  can$ = this.changes$.pipe(
+    map(({ rules, userRoles }) => ({
+      rules,
+      userRoles,
+      can: commonCan.bind(null, [userRoles], rules),
+    }))
+  );
+
+  constructor(private globalRulesService: DoGlobalRulesService) {}
 
   can(ruleName: string, args?: any[]): any {
     return commonCan(
       [this.globalRulesService.userRolesValue],
-      { ...this.rules, ...this.globalRulesService.rules },
+      { ...this.globalRulesService.rulesValue, ...this.localRulesValue },
       ruleName,
       args
     );
   }
 
-  nextRulesAndRoles(rules: Dictionary<DoRuleType>, userRoles: DoRoleType[]) {
-    this.addRules(rules);
-    this.globalRulesService.changeRoles(userRoles);
-    this.next({
-      rules,
-      userRoles: this.globalRulesService.userRolesValue,
-      can: commonCan.bind(null, [userRoles], {
-        ...this.globalRulesService.rules,
-        ...rules,
-      }),
-    });
-  }
-
-  protected next(value: {
-    rules: Dictionary<DoRuleType>;
-    userRoles: DoRoleType[];
-    can: (ruleName: string, args?: any[]) => boolean;
-  }) {
-    super.next(value);
-  }
-
-  private addRules(rules: Dictionary<DoRuleType>) {
+  nextRules(rules: Dictionary<DoRuleType>) {
     DoGlobalRulesService.nameRules(rules);
-    this.rules = rules;
+    this._rules$.next(rules);
+  }
+
+  nextRoles(userRoles: DoRoleType[]) {
+    this.globalRulesService.changeRoles(userRoles);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
   }
 }

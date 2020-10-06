@@ -23,7 +23,7 @@ export class Route1Component implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.source?.provideRulesService
+    this.source?.provideRulesService.can$
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ userRoles, can }) => {
         console.log(

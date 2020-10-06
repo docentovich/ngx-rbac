@@ -5,7 +5,6 @@ import { DoRole } from '../checker/do-role';
 import { DoCheckerType } from '../type/do-checker-type';
 import { DoRoleType } from '../type/do-role-type';
 import { DoRuleType } from '../type/do-rule-type';
-import { Dependency } from '../type/dependency';
 
 export class DoRule extends DoChecker implements DoRuleType {
   static checkerFactory(
@@ -21,7 +20,10 @@ export class DoRule extends DoChecker implements DoRuleType {
       }
     });
 
-    const chainCheckers = doAnd([...doOr(roleCheckers), ...doAnd(elseCheckers)]);
+    const chainCheckers = doAnd([
+      ...doOr(roleCheckers),
+      ...doAnd(elseCheckers),
+    ]);
 
     return chainCheckers[0].check;
   }

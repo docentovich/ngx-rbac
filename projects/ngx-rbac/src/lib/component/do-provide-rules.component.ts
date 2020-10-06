@@ -3,18 +3,23 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Optional,
-  SimpleChanges,
   SkipSelf,
 } from '@angular/core';
+import { Subject } from 'rxjs';
+
 import { ProvideRulesService } from '../service/provide-rules.service';
 import { Dictionary } from '../type/dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { DoGlobalRulesService } from '../service/do-global-rules.service';
+import { TypedSimpleChanges } from '../type/typed-simple-changes';
+
+interface IDoProvideRulesComponent {
+  globalRules: Dictionary<DoRuleType>;
+  rules: Dictionary<DoRuleType>;
+  roles: DoRoleType[];
+}
 
 @Component({
   selector: 'do-provide-rules',
@@ -22,13 +27,14 @@ import { DoGlobalRulesService } from '../service/do-global-rules.service';
   styles: [],
   providers: [ProvideRulesService],
 })
-export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
+export class DoProvideRulesComponent
+  implements OnChanges, IDoProvideRulesComponent, OnDestroy {
   @Input() globalRules: Dictionary<DoRuleType> = {};
   @Input() rules: Dictionary<DoRuleType> = {};
   @Input() roles: DoRoleType[];
+
   rulesComputed: Dictionary<DoRuleType> = {};
-  userRolesComputed: DoRoleType[] = [];
-  protected destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     @Optional()
@@ -38,31 +44,20 @@ export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
     private globalRulesService: DoGlobalRulesService
   ) {}
 
-  ngOnInit(): void {
-    this.source?.provideRulesService
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ rules, userRoles }) => {
-        this.concatRules(this.rules, this.roles);
-      });
-  }
+  ngOnChanges(changes: TypedSimpleChanges<IDoProvideRulesComponent>): void {
+    if (changes.rules?.currentValue !== changes.rules?.previousValue) {
+      this.concatRules(changes.rules?.currentValue || this.rules || {});
+    }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // todo think about split rules and roles adding logic
-    if (
-      changes.rules?.currentValue !== changes.rules?.previousValue ||
-      changes.roles?.currentValue !== changes.roles?.previousValue
-    ) {
-      this.concatRules(
-        changes.rules?.currentValue || this.rules || {},
-        changes.roles?.currentValue
-      );
+    if (changes.roles?.currentValue !== changes.roles?.previousValue) {
+      this.provideRulesService.nextRoles(changes.roles?.currentValue);
     }
 
     if (
-      changes.guardRules?.currentValue &&
-      changes.guardRules?.currentValue !== changes.guardRules?.previousValue
+      changes.globalRules?.currentValue &&
+      changes.globalRules?.currentValue !== changes.globalRules?.previousValue
     ) {
-      this.globalRulesService.addGlobalRules(changes.guardRules?.currentValue);
+      this.globalRulesService.addGlobalRules(changes.globalRules?.currentValue);
     }
   }
 
@@ -70,20 +65,13 @@ export class DoProvideRulesComponent implements OnInit, OnChanges, OnDestroy {
     return this.provideRulesService.can(ruleName, args);
   }
 
-  private concatRules(
-    rules: Dictionary<DoRuleType>,
-    userRoles: DoRoleType[]
-  ): void {
-    this.userRolesComputed = userRoles || this.source?.roles || [];
+  private concatRules(rules: Dictionary<DoRuleType>): void {
     this.rulesComputed = {
-      ...(rules || {}),
       ...(this.source?.rules || {}),
+      ...(rules || {}),
     };
 
-    this.provideRulesService.nextRulesAndRoles(
-      this.rules,
-      this.userRolesComputed
-    );
+    this.provideRulesService.nextRules(this.rulesComputed);
   }
 
   ngOnDestroy(): void {

@@ -1,5 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
-import { creatRule, Dictionary, DoProvideRulesComponent, DoRoleType, DoRuleType } from '@do/ngx-rbac';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  Optional,
+  SkipSelf,
+} from '@angular/core';
+import {
+  creatRule,
+  Dictionary,
+  DoProvideRulesComponent,
+  DoRoleType,
+  DoRuleType,
+} from '@do/ngx-rbac';
 import { AppComponent } from './app.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,24 +24,30 @@ import { takeUntil } from 'rxjs/operators';
     <hr />
 
     <do-provide-rules [rules]="rules">
-      {{ ((source?.provideRulesService | async)?.userRoles)[0]?.name }} can
-      GUEST: {{ 'GUEST_CAN' | doCan }}<br />
-      {{ ((source?.provideRulesService | async)?.userRoles)[0]?.name }} can
-      ADMIN: {{ 'ADMIN_CAN' | doCan }}<br />
-
-      {{ ((source?.provideRulesService | async)?.userRoles)[0]?.name }} can
-      inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 1:2 }}<br />
-      {{ ((source?.provideRulesService | async)?.userRoles)[0]?.name }} can
-      inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 2:2 }}<br />
+      {{
+        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
+      }}
+      can GUEST: {{ 'GUEST_CAN' | doCan }}<br />
+      {{
+        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
+      }}
+      can ADMIN: {{ 'ADMIN_CAN' | doCan }}<br />
+      {{
+        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
+      }}
+      can inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 1:2 }}<br />
+      {{
+        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
+      }}
+      can inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 2:2 }}<br />
     </do-provide-rules>
 
     <hr />
-    <a routerLink='/route1'>only admin</a><br>
-    <a routerLink='/route2'>only guest</a><br>
-    <a routerLink='/route3'>guest and admin</a><br>
-
+    <a routerLink="/route1">only admin</a><br />
+    <a routerLink="/route2">only guest</a><br />
+    <a routerLink="/route3">guest and admin</a><br />
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HelloComponent implements OnInit, OnDestroy {
   public static rules1: Dictionary<DoRuleType> = {
@@ -57,11 +76,11 @@ export class HelloComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(
       'static ' +
-        this.source?.provideRulesService.value.userRoles[0]?.name +
+        this.source?.provideRulesService.userRolesValue[0]?.name +
         ' can GUARD_RULE ' +
         this.source?.provideRulesService.can('GUARD_RULE')
     );
-    this.source?.provideRulesService
+    this.source?.provideRulesService.can$
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ userRoles, can }) => {
         console.log(

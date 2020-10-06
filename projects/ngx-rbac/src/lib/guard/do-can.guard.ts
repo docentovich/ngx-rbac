@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { DoGlobalRulesService } from '../service/do-global-rules.service';
 import { Observable } from 'rxjs';
+
+import { DoGlobalRulesService } from '../service/do-global-rules.service';
 
 @Injectable()
 export class DoCanGuard implements CanActivate {

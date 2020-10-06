@@ -6,17 +6,17 @@ import {
   PipeTransform,
   SkipSelf,
 } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { DoProvideRulesComponent } from '../component/do-provide-rules.component';
-import { filter, takeUntil } from 'rxjs/operators';
-import { combineLatest, Subject } from 'rxjs';
-import { DoGlobalRulesService } from '../service/do-global-rules.service';
 
 @Pipe({
   name: 'doCan',
   pure: false,
 })
 export class DoCanPipe implements PipeTransform, OnDestroy {
-  protected destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
   private markForTransform = true;
   private value: string;
 
@@ -26,18 +26,13 @@ export class DoCanPipe implements PipeTransform, OnDestroy {
     private source: DoProvideRulesComponent,
     @Optional()
     @SkipSelf()
-    private changeDetectorRef: ChangeDetectorRef,
-    private doGlobalRulesService: DoGlobalRulesService
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     if (!source?.provideRulesService) {
       return;
     }
-    // todo use change$ - combined Observable from local service
-    combineLatest([this.source?.provideRulesService, doGlobalRulesService.userRoles])
-      .pipe(
-        takeUntil(this.destroy$),
-        filter(([{ rules }, globalUserRoles] ) => !!(rules || globalUserRoles))
-      )
+    this.source?.provideRulesService.changes$
+      .pipe(takeUntil(this.destroy$))
       .subscribe((providerKey) => {
         this.markForTransform = true;
       });

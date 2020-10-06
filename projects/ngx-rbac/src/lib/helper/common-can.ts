@@ -13,7 +13,7 @@ export function commonCan(
     (r) => r.name === ruleName
   );
   if (!rule) {
-    throw Error('no rule for ' + ruleName);
+    throw Error('No rule for ' + ruleName);
   }
 
   return rule.check(args, dependency);
