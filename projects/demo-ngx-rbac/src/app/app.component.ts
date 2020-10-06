@@ -28,7 +28,7 @@ export class AppComponent {
   admin: DoRoleType = AppComponent.admin;
   myRoles = [this.admin];
 
-  constructor(doGlobalRulesService: DoGlobalRulesService) {
+  constructor(public doGlobalRulesService: DoGlobalRulesService) {
     doGlobalRulesService.addGlobalRules(AppComponent.rules);
   }
 

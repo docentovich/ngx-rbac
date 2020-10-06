@@ -35,6 +35,7 @@ export class DoCanPipe implements PipeTransform, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((providerKey) => {
         this.markForTransform = true;
+        this.changeDetectorRef.markForCheck();
       });
   }
 

@@ -29,7 +29,7 @@ export class ProvideRulesService implements OnDestroy {
     this.globalRulesService.changes$,
   ]).pipe(
     takeUntil(this.destroy$),
-    map(([localRules, [globalRules, userRoles]]) => ({
+    map(([localRules, { globalRules, userRoles }]) => ({
       rules: {
         ...globalRules,
         ...localRules,

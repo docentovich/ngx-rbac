@@ -8,6 +8,7 @@ import { NgxRbacModule } from '@do/ngx-rbac';
 import { Route1Component } from './route1.component';
 import { Route2Component } from './route2.component';
 import { Route3Component } from './route3.component';
+import { DeepComponent } from './deep.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { Route3Component } from './route3.component';
     HelloComponent,
     Route1Component,
     Route2Component,
-    Route3Component
+    Route3Component,
+    DeepComponent
   ],
   imports: [
     BrowserModule,

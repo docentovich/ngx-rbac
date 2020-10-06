@@ -45,19 +45,25 @@ export class DoProvideRulesComponent
   ) {}
 
   ngOnChanges(changes: TypedSimpleChanges<IDoProvideRulesComponent>): void {
-    if (changes.rules?.currentValue !== changes.rules?.previousValue) {
-      this.concatRules(changes.rules?.currentValue || this.rules || {});
+    if (
+      changes.rules?.currentValue &&
+      changes.rules?.currentValue !== changes.rules?.previousValue
+    ) {
+      this.concatRules(changes.rules.currentValue || this.rules || {});
     }
 
-    if (changes.roles?.currentValue !== changes.roles?.previousValue) {
-      this.provideRulesService.nextRoles(changes.roles?.currentValue);
+    if (
+      changes.roles?.currentValue &&
+      changes.roles?.currentValue !== changes.roles?.previousValue
+    ) {
+      this.provideRulesService.nextRoles(changes.roles.currentValue);
     }
 
     if (
       changes.globalRules?.currentValue &&
       changes.globalRules?.currentValue !== changes.globalRules?.previousValue
     ) {
-      this.globalRulesService.addGlobalRules(changes.globalRules?.currentValue);
+      this.globalRulesService.addGlobalRules(changes.globalRules.currentValue);
     }
   }
 
@@ -67,7 +73,7 @@ export class DoProvideRulesComponent
 
   private concatRules(rules: Dictionary<DoRuleType>): void {
     this.rulesComputed = {
-      ...(this.source?.rules || {}),
+      ...(this.source?.rulesComputed || {}),
       ...(rules || {}),
     };
 

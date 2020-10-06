@@ -9,6 +9,7 @@ import {
 import {
   creatRule,
   Dictionary,
+  DoGlobalRulesService,
   DoProvideRulesComponent,
   DoRoleType,
   DoRuleType,
@@ -20,26 +21,19 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-hello',
   template: `
-    <h1>hello</h1>
+    <h1>
+      hello {{ ((doGlobalRulesService?.changes$ | async)?.userRoles)[0]?.name }}
+    </h1>
+
     <hr />
 
     <do-provide-rules [rules]="rules">
-      {{
-        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
-      }}
       can GUEST: {{ 'GUEST_CAN' | doCan }}<br />
-      {{
-        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
-      }}
       can ADMIN: {{ 'ADMIN_CAN' | doCan }}<br />
-      {{
-        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
-      }}
-      can inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 1:2 }}<br />
-      {{
-        ((source?.provideRulesService.changes$ | async)?.userRoles)[0]?.name
-      }}
-      can inherited_GUEST_CAN: {{ 'inherited_GUEST_CAN' | doCan: 2:2 }}<br />
+      can inherited_GUEST_CAN: {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br />
+      can inherited_GUEST_CAN: {{ 'inherited_ADMIN_CAN' | doCan: 2:2 }}<br />
+      <br />
+      <app-deep></app-deep>
     </do-provide-rules>
 
     <hr />
@@ -56,7 +50,7 @@ export class HelloComponent implements OnInit, OnDestroy {
   };
 
   public static inheritedRules: Dictionary<DoRuleType> = {
-    inherited_GUEST_CAN: creatRule([
+    inherited_ADMIN_CAN: creatRule([
       HelloComponent.rules1.ADMIN_CAN,
       ([arg1, arg2], [userRoles]: [DoRoleType[]]) => {
         return arg1 === arg2;
@@ -68,7 +62,8 @@ export class HelloComponent implements OnInit, OnDestroy {
   constructor(
     @Optional()
     @SkipSelf()
-    public source: DoProvideRulesComponent
+    public source: DoProvideRulesComponent,
+    public doGlobalRulesService: DoGlobalRulesService
   ) {}
 
   rules = { ...HelloComponent.rules1, ...HelloComponent.inheritedRules };

@@ -5,6 +5,7 @@ import { Dictionary } from '../type/dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { commonCan } from '../helper/common-can';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class DoGlobalRulesService {
@@ -18,7 +19,9 @@ export class DoGlobalRulesService {
 
   rules$: Observable<Dictionary<DoRuleType>> = this._rules$.asObservable();
   userRoles$: Observable<DoRoleType[]> = this._userRoles$.asObservable();
-  changes$ = combineLatest([this.rules$, this.userRoles$]);
+  changes$ = combineLatest([this.rules$, this.userRoles$]).pipe(
+    map(([globalRules, userRoles]) => ({ globalRules, userRoles }))
+  );
 
   // todo check if possible mutation
   public static nameRules(rules: Dictionary<DoRuleType>): void {
