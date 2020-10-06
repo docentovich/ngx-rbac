@@ -17,3 +17,4 @@ export { DoCheckerType } from './lib/type/do-checker-type';
 export { NamedDictionary, StringDictionary } from './lib/type/named-dictionary';
 export { Constructor } from './lib/type/constructor';
 export { CheckerFunction } from './lib/type/checker-function';
+export { DoRuleOptions, DoSuppressErrors }  from './lib/type/do-rule-options';

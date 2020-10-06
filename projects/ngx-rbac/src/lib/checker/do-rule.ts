@@ -6,10 +6,15 @@ import { DoCheckerType } from '../type/do-checker-type';
 import { DoRoleType } from '../type/do-role-type';
 import { DoRuleType } from '../type/do-rule-type';
 import { NamedDictionary } from '../type/named-dictionary';
+import { DefaultOptions, DoRuleOptions } from '../type/do-rule-options';
 
 export class DoRule extends DoChecker implements DoRuleType {
+
+  public options: DoRuleOptions;
+
   static checkerFactory(
-    checkers: Array<CheckerFunction | DoCheckerType>
+    checkers: AllPossibleCheckers[],
+    options: DoRuleOptions
   ): CheckerFunction {
     const elseCheckers: Array<DoRuleType | CheckerFunction | string> = [];
     const roleCheckers: DoRoleType[] = [];
@@ -22,30 +27,39 @@ export class DoRule extends DoChecker implements DoRuleType {
     });
 
     const chainCheckers = doAnd([
-      ...doOr(roleCheckers),
-      ...doAnd(elseCheckers),
-    ]);
+      ...doOr(roleCheckers, options),
+      ...doAnd(elseCheckers, options),
+    ], options);
 
     return chainCheckers[0].check;
   }
 
   constructor(
-    checkers: Array<CheckerFunction | DoCheckerType>,
-    name: string = 'no-name-rule-checker'
+    checkers: AllPossibleCheckers[],
+    name: string = 'no-name-rule-checker',
+    options?: DoRuleOptions
   ) {
-    super(DoRule.checkerFactory(checkers), name);
+    super(
+      DoRule.checkerFactory(
+        checkers,
+        options || DefaultOptions
+      ),
+      name
+    );
+    this.options = options || DefaultOptions;
   }
 }
 
 export function creatRule(
-  args: AllPossibleCheckers[]
+  args: AllPossibleCheckers[],
+  options?: DoRuleOptions
 ): DoRuleType {
-  return new DoRule(args);
+  return new DoRule(args, 'no-name-rule-checker', options);
 }
 
 export function creatRuleSet<T extends {
-  [key: string]: AllPossibleCheckers[];
-}>(args: T): NamedDictionary<T, DoRule> {
+    [key: string]: AllPossibleCheckers[];
+  }>(args: T, options?: DoRuleOptions): NamedDictionary<T, DoRule> {
   return Object.entries(args).reduce((acc, [name, checker]) => {
     acc[name] = new DoRule(checker, name);
     return acc;
