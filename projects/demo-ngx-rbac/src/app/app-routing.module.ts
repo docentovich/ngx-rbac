@@ -4,6 +4,7 @@ import { HelloComponent } from './hello.component';
 import { Route1Component } from './route1.component';
 import { DoCanGuard } from '@do/ngx-rbac';
 import { Route3Component } from './route3.component';
+import { Route4Component } from './route4.component';
 
 
 const routes: Routes = [
@@ -34,6 +35,14 @@ const routes: Routes = [
     },
     canActivate: [DoCanGuard],
     component: Route3Component
+  },
+  {
+    path: 'route4',
+    data: {
+      rules: ['IS_MODERATOR']
+    },
+    canActivate: [DoCanGuard],
+    component: Route4Component
   },
 ];
 

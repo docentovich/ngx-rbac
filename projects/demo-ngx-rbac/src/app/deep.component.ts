@@ -57,7 +57,7 @@ export class DeepComponent {
       },
     ],
     CHAINED_RULE_NOT: [
-      ...doNot('CHAIN_WITH_STRING_RULE'),
+      doNot('CHAIN_WITH_STRING_RULE'),
       (args) => {
         return args[0] === 'cool';
       },
@@ -72,7 +72,7 @@ export class DeepComponent {
         },
       ],
       suppressErrorsNot: [
-        ...doNot('CHAIN_WITH_STRING_RULE_NOT_DEFINED_YET'),
+        doNot('CHAIN_WITH_STRING_RULE_NOT_DEFINED_YET'),
         (args) => {
           return args[0] === 'cool';
         },

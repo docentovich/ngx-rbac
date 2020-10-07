@@ -9,6 +9,7 @@ import { Route1Component } from './route1.component';
 import { Route2Component } from './route2.component';
 import { Route3Component } from './route3.component';
 import { DeepComponent } from './deep.component';
+import { Route4Component } from './route4.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { DeepComponent } from './deep.component';
     Route1Component,
     Route2Component,
     Route3Component,
+    Route4Component,
     DeepComponent
   ],
   imports: [

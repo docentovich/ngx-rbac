@@ -5,7 +5,10 @@ import {
 } from '../checker/do-checker';
 import { DoCheckerType } from '../type/do-checker-type';
 import { Dependency } from '../type/dependency';
-import { AllPossibleCheckers, DoCheckerFunction } from '../type/do-checker-function';
+import {
+  AllPossibleCheckers,
+  DoCheckerFunction,
+} from '../type/do-checker-function';
 import {
   DefaultOptions,
   DoRuleOptions,
@@ -16,54 +19,50 @@ export function doAnd(
   checkers: AllPossibleCheckers[],
   options: DoRuleOptions = DefaultOptions,
   name = 'logical and'
-): DoCheckerType[] {
+): DoCheckerType {
+  checkers = checkers.filter(chk => !!chk);
   if (!checkers || checkers?.length === 0) {
-    return [];
+    return null;
   }
-  return [
-    creatChecker(name, (args: any[], dependency: Dependency) => {
+  return creatChecker(name, (args: any[], dependency: Dependency) => {
       return anyCheckerToDoChecker(checkers).every(
         safeRunCheck(args, dependency, options, true)
       );
-    }),
-  ];
+    });
 }
 
 export function doOr(
   checkers: AllPossibleCheckers[],
   options: DoRuleOptions = DefaultOptions,
   name = 'logical or'
-): DoCheckerType[] {
+): DoCheckerType {
+  checkers = checkers.filter(chk => !!chk);
   if (!checkers || checkers?.length === 0) {
-    return [];
+    return null;
   }
-  return [
-    creatChecker(name, (args: any[], dependency: Dependency) => {
+  return creatChecker(name, (args: any[], dependency: Dependency) => {
       return anyCheckerToDoChecker(checkers).some(
         safeRunCheck(args, dependency, options, false)
       );
-    }),
-  ];
+    });
 }
 
 export function doNot(
   checker: AllPossibleCheckers,
   options: DoRuleOptions = DefaultOptions,
   name = 'logical not'
-): DoCheckerType[] {
+): DoCheckerType {
   if (!checker) {
-    return [];
+    return null;
   }
-  return [
-    creatChecker(name, (args: any[], dependency: Dependency) => {
-      return !safeRunCheck(
-        args,
-        dependency,
-        options,
-        false
-      )(anyCheckerToDoChecker([checker])[0]);
-    }),
-  ];
+  return creatChecker(name, (args: any[], dependency: Dependency) => {
+    return !safeRunCheck(
+      args,
+      dependency,
+      options,
+      false
+    )(anyCheckerToDoChecker(Array.isArray(checker) ? checker : [checker])[0]);
+  });
 }
 
 function anyCheckerToDoChecker(checkers: AllPossibleCheckers[]): DoChecker[] {
@@ -73,8 +72,8 @@ function anyCheckerToDoChecker(checkers: AllPossibleCheckers[]): DoChecker[] {
       checker instanceof DoChecker
         ? checker
         : typeof checker === 'string'
-          ? creatStringChecker(checker)
-          : creatChecker(name, checker as DoCheckerFunction)
+        ? creatStringChecker(checker)
+        : creatChecker(name, checker as DoCheckerFunction)
     );
 }
 
