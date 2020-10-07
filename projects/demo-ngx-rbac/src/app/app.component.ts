@@ -15,14 +15,20 @@ import {
 })
 export class AppComponent {
   public static guest: DoRoleType = doCreatRole('GUEST');
-  public static admin: DoRoleType = doCreatRole('ADMIN', AppComponent.guest);
+  public static moderator: DoRoleType = doCreatRole('MODERATOR', AppComponent.guest);
+  public static admin: DoRoleType = doCreatRole('ADMIN', [
+    AppComponent.guest,
+    AppComponent.moderator,
+  ]);
 
   public static rules = doCreatRuleSet({
     GUARD_RULE: [AppComponent.admin],
     GUEST_and_ADMIN: [AppComponent.guest],
-    CHAIN_GLOBAL_WITH_STRING_RULE: [(args) => {
-      return args[1] === 'and global';
-    }],
+    CHAIN_GLOBAL_WITH_STRING_RULE: [
+      (args) => {
+        return args[1] === 'and global';
+      },
+    ],
     ONLY_GUEST: [AppComponent.guest, ...doNot(AppComponent.admin)],
   });
   guest: DoRoleType = AppComponent.guest;
