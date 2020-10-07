@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { DoGlobalRulesService } from '../service/do-global-rules.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DoCanGuard implements CanActivate {
   constructor(private guardRulesService: DoGlobalRulesService) {}
 

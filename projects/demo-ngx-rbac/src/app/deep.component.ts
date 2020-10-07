@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HelloComponent } from './hello.component';
-import { creatRule, creatRuleSet, doNot, DoSuppressErrors } from '@do/ngx-rbac';
+import { doCreatRule, doCreatRuleSet, doNot, DoSuppressErrors } from '@do/ngx-rbac';
 
 @Component({
   selector: 'app-deep',
@@ -39,7 +39,7 @@ import { creatRule, creatRuleSet, doNot, DoSuppressErrors } from '@do/ngx-rbac';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeepComponent {
-  public static deepRules = creatRuleSet({
+  public static deepRules = doCreatRuleSet({
     EXTENDED_RULE: [
       HelloComponent.inheritedRules.inherited_ADMIN_CAN,
       ([arg1]) => arg1 === 10,
@@ -63,7 +63,7 @@ export class DeepComponent {
       },
     ],
   });
-  public static suppressErrors = creatRuleSet(
+  public static suppressErrors = doCreatRuleSet(
     {
       suppressErrors: [
         'CHAIN_WITH_STRING_RULE_NOT_DEFINED_YET',
@@ -81,7 +81,7 @@ export class DeepComponent {
     { suppressErrors: DoSuppressErrors.warnings }
   );
   public static overrideRules = {
-    GUEST_CAN: creatRule([() => false]),
+    GUEST_CAN: doCreatRule([() => false]),
   };
 
   deepRules = { ...DeepComponent.deepRules, ...DeepComponent.suppressErrors };

@@ -19,7 +19,7 @@ export class DoRole extends DoChecker implements DoRoleType  {
   }
 }
 
-export function creatRole(
+export function doCreatRole(
   name: string,
   inheritedRole?: DoRoleType
 ): DoRoleType {

@@ -5,7 +5,7 @@ import {
 } from '../checker/do-checker';
 import { DoCheckerType } from '../type/do-checker-type';
 import { Dependency } from '../type/dependency';
-import { AllPossibleCheckers, CheckerFunction } from '../type/checker-function';
+import { AllPossibleCheckers, DoCheckerFunction } from '../type/do-checker-function';
 import {
   DefaultOptions,
   DoRuleOptions,
@@ -74,7 +74,7 @@ function anyCheckerToDoChecker(checkers: AllPossibleCheckers[]): DoChecker[] {
         ? checker
         : typeof checker === 'string'
           ? creatStringChecker(checker)
-          : creatChecker(name, checker as CheckerFunction)
+          : creatChecker(name, checker as DoCheckerFunction)
     );
 }
 

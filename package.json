@@ -4,8 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4201",
+    "install-nested": "npm install --scripts-prepend-node-path=auto",
     "build": "ng build",
-    "build-lib": "ng build ngx-teleport --prod",
+    "build-lib": "ng build ngx-rbac --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -58,6 +59,10 @@
   "bugs": {
     "url": "https://github.com/docentovich/ngx-rbac/issues"
   },
-  "keywords": ["rbac", "permission system", "access control"],
+  "keywords": [
+    "rbac",
+    "permission system",
+    "access control"
+  ],
   "homepage": "https://github.com/docentovich/ngx-rbac#readme"
 }

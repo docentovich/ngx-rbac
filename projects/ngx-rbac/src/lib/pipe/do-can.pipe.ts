@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { DoProvideRulesComponent } from '../component/do-provide-rules.component';
-import { AllPossibleCheckers } from '../type/checker-function';
+import { AllPossibleCheckers } from '../type/do-checker-function';
 import { DoChecker } from '../checker/do-checker';
 
 @Pipe({

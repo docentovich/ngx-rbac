@@ -1,10 +1,10 @@
 import { Dependency } from '../type/dependency';
-import { StringDictionary } from '../type/named-dictionary';
+import { DoStringDictionary } from '../type/do-named-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 
 export function commonCan(
   dependency: Dependency,
-  rulesComputed: StringDictionary<DoRuleType>,
+  rulesComputed: DoStringDictionary<DoRuleType>,
   ruleName: string,
   args?: any[]
 ): boolean {

@@ -1,9 +1,29 @@
 {
-  "name": "ngx-rbac",
+  "name": "@do/ngx-rbac",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^9.0.7",
     "@angular/core": "^9.0.7",
     "tslib": "^1.10.0"
-  }
+  },
+  "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.7.",
+  "main": "karma.conf.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/docentovich/ngx-rbac.git"
+  },
+  "keywords": [
+    "rbac",
+    "access",
+    "access-control"
+  ],
+  "author": "Andrey Prozorov (mailto:docentovich@gmila.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/docentovich/ngx-rbac/issues"
+  },
+  "homepage": "https://github.com/docentovich/ngx-rbac#readme"
 }

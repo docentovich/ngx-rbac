@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
-  creatRole,
-  creatRuleSet,
+  doCreatRole,
+  doCreatRuleSet,
   DoGlobalRulesService,
   doNot,
   DoRoleType,
@@ -14,10 +14,10 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  public static guest: DoRoleType = creatRole('GUEST');
-  public static admin: DoRoleType = creatRole('ADMIN', AppComponent.guest);
+  public static guest: DoRoleType = doCreatRole('GUEST');
+  public static admin: DoRoleType = doCreatRole('ADMIN', AppComponent.guest);
 
-  public static rules = creatRuleSet({
+  public static rules = doCreatRuleSet({
     GUARD_RULE: [AppComponent.admin],
     GUEST_and_ADMIN: [AppComponent.guest],
     CHAIN_GLOBAL_WITH_STRING_RULE: [(args) => {

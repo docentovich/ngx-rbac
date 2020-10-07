@@ -1,10 +1,10 @@
 import { DoChecker } from './do-checker';
-import { AllPossibleCheckers, CheckerFunction } from '../type/checker-function';
+import { AllPossibleCheckers, DoCheckerFunction } from '../type/do-checker-function';
 import { doAnd, doOr } from '../helper/logic-operator';
 import { DoRole } from '../checker/do-role';
 import { DoRoleType } from '../type/do-role-type';
 import { DoRuleType } from '../type/do-rule-type';
-import { NamedDictionary } from '../type/named-dictionary';
+import { DoNamedDictionary } from '../type/do-named-dictionary';
 import { DefaultOptions, DoRuleOptions } from '../type/do-rule-options';
 
 export class DoRule extends DoChecker implements DoRuleType {
@@ -14,8 +14,8 @@ export class DoRule extends DoChecker implements DoRuleType {
   static checkerFactory(
     checkers: AllPossibleCheckers[],
     options: DoRuleOptions
-  ): CheckerFunction {
-    const elseCheckers: Array<DoRuleType | CheckerFunction | string> = [];
+  ): DoCheckerFunction {
+    const elseCheckers: Array<DoRuleType | DoCheckerFunction | string> = [];
     const roleCheckers: DoRoleType[] = [];
     checkers.forEach((checker) => {
       if (checker instanceof DoRole) {
@@ -49,18 +49,18 @@ export class DoRule extends DoChecker implements DoRuleType {
   }
 }
 
-export function creatRule(
+export function doCreatRule(
   args: AllPossibleCheckers[],
   options?: DoRuleOptions
 ): DoRuleType {
   return new DoRule(args, 'no-name-rule-checker', options);
 }
 
-export function creatRuleSet<T extends {
+export function doCreatRuleSet<T extends {
     [key: string]: AllPossibleCheckers[];
-  }>(args: T, options?: DoRuleOptions): NamedDictionary<T, DoRule> {
+  }>(args: T, options?: DoRuleOptions): DoNamedDictionary<T, DoRule> {
   return Object.entries(args).reduce((acc, [name, checker]) => {
-    acc[name] = creatRule(checker, options);
+    acc[name] = doCreatRule(checker, options);
     acc[name].setName(name);
     return acc;
   }, {} as any);

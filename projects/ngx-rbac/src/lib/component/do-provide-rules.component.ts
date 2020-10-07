@@ -8,39 +8,39 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { ProvideRulesService } from '../service/provide-rules.service';
-import { StringDictionary } from '../type/named-dictionary';
+import { DoProvideRulesService } from '../service/do-provide-rules.service';
+import { DoStringDictionary } from '../type/do-named-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { DoGlobalRulesService } from '../service/do-global-rules.service';
 import { TypedSimpleChanges } from '../type/typed-simple-changes';
 
 interface IDoProvideRulesComponent {
-  globalRules: StringDictionary<DoRuleType>;
-  rules: StringDictionary<DoRuleType>;
+  globalRules: DoStringDictionary<DoRuleType>;
+  rules: DoStringDictionary<DoRuleType>;
   roles: DoRoleType[];
 }
 
 @Component({
   selector: 'do-provide-rules',
-  template: ` <ng-content></ng-content>`,
+  template: `<ng-content></ng-content>`,
   styles: [],
-  providers: [ProvideRulesService],
+  providers: [DoProvideRulesService],
 })
 export class DoProvideRulesComponent
   implements OnChanges, IDoProvideRulesComponent, OnDestroy {
-  @Input() globalRules: StringDictionary<DoRuleType> = {};
-  @Input() rules: StringDictionary<DoRuleType> = {};
+  @Input() globalRules: DoStringDictionary<DoRuleType> = {};
+  @Input() rules: DoStringDictionary<DoRuleType> = {};
   @Input() roles: DoRoleType[];
 
-  rulesComputed: StringDictionary<DoRuleType> = {};
+  rulesComputed: DoStringDictionary<DoRuleType> = {};
   private destroy$ = new Subject<void>();
 
   constructor(
     @Optional()
     @SkipSelf()
     private source: DoProvideRulesComponent,
-    public provideRulesService: ProvideRulesService,
+    public provideRulesService: DoProvideRulesService,
     private globalRulesService: DoGlobalRulesService
   ) {}
 
@@ -71,7 +71,7 @@ export class DoProvideRulesComponent
     return this.provideRulesService.can(ruleName, args);
   }
 
-  private concatRules(rules: StringDictionary<DoRuleType>): void {
+  private concatRules(rules: DoStringDictionary<DoRuleType>): void {
     this.rulesComputed = {
       ...(this.source?.rulesComputed || {}),
       ...(rules || {}),

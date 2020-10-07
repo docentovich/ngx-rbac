@@ -1,9 +1,9 @@
-import { CheckerFunction } from '../type/checker-function';
+import { DoCheckerFunction } from '../type/do-checker-function';
 import { DoCheckerType } from '../type/do-checker-type';
 
 export class DoChecker implements DoCheckerType {
   constructor(
-    public check: CheckerFunction,
+    public check: DoCheckerFunction,
     public name: string = 'no-name-checker'
   ) {}
 
@@ -18,7 +18,7 @@ export class DoChecker implements DoCheckerType {
 
 export function creatChecker(
   name: string,
-  checker: CheckerFunction
+  checker: DoCheckerFunction
 ): DoCheckerType {
   return new DoChecker(checker, name);
 }

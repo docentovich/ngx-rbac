@@ -13,7 +13,7 @@
     "target": "es2015",
     "lib": ["es2018", "dom"],
     "paths": {
-      "@do/ngx-rbac": ["projects/ngx-rbac/src/public_api"],
+      "@do/ngx-rbac": ["projects/ngx-rbac/src/public-api"],
       "ngx-rbac": ["dist/ngx-rbac/ngx-rbac", "dist/ngx-rbac"]
     }
   },

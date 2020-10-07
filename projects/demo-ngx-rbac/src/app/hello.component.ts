@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
-import { creatRuleSet, DoGlobalRulesService, DoProvideRulesComponent, DoRoleType } from '@do/ngx-rbac';
+import { doCreatRuleSet, DoGlobalRulesService, DoProvideRulesComponent, DoRoleType } from '@do/ngx-rbac';
 import { AppComponent } from './app.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -30,13 +30,13 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HelloComponent implements OnInit, OnDestroy {
-  public static rules1 = creatRuleSet({
+  public static rules1 = doCreatRuleSet({
     GUEST_CAN: [AppComponent.guest],
     ADMIN_CAN: [AppComponent.admin],
     CHAIN_WITH_STRING_RULE: [AppComponent.admin],
   });
 
-  public static inheritedRules = creatRuleSet({
+  public static inheritedRules = doCreatRuleSet({
     inherited_ADMIN_CAN: [
       HelloComponent.rules1.ADMIN_CAN,
       ([arg1, arg2], [userRoles]) => {
