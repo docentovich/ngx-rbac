@@ -1,5 +1,5 @@
 import { Dependency } from '../type/dependency';
-import { DoStringDictionary } from '../type/do-named-dictionary';
+import { DoStringDictionary } from '../type/do-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 
 export function commonCan(

@@ -15,7 +15,7 @@ export { doCreatRole } from './lib/checker/do-role';
 export { DoRoleType } from './lib/type/do-role-type';
 export { DoRuleType } from './lib/type/do-rule-type';
 export { DoCheckerType } from './lib/type/do-checker-type';
-export { DoNamedDictionary, DoStringDictionary } from './lib/type/do-named-dictionary';
+export { DoNamedDictionary, DoStringDictionary } from './lib/type/do-dictionary';
 export { Constructor } from './lib/type/constructor';
 export { DoCheckerFunction } from './lib/type/do-checker-function';
 export { DoRuleOptions, DoSuppressErrors }  from './lib/type/do-rule-options';

@@ -3,7 +3,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 
 import { DoGlobalRulesService } from './do-global-rules.service';
-import { DoStringDictionary } from '../type/do-named-dictionary';
+import { DoStringDictionary } from '../type/do-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { commonCan } from '../helper/common-can';
