@@ -58,4 +58,29 @@ export class DoGlobalRulesService {
       args
     );
   }
+
+  removeAllGlobalRules(): void {
+    this._rules$.next({});
+  }
+
+  removeGlobalRulesByName(ruleNames: string[]): void {
+    const rules = this._rules$.value;
+    ruleNames.forEach((ruleName) => {
+      delete rules[ruleName];
+    });
+    this._rules$.next(rules);
+  }
+
+  removeGlobalRulesByGroupName(groupName: string): void {
+    const rules = Object.entries(this._rules$.value).reduce(
+      (acc: DoStringDictionary<DoRuleType>, [nextRuleName, nextRule]) => {
+        if (nextRule.options.groupName !== groupName) {
+          acc[nextRuleName] = nextRule;
+        }
+        return acc;
+      },
+      {}
+    );
+    this._rules$.next(rules);
+  }
 }
