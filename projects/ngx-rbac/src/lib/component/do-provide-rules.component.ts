@@ -3,17 +3,19 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Optional,
   SkipSelf,
 } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 
 import { DoProvideRulesService } from '../service/do-provide-rules.service';
-import { DoStringDictionary } from '../type/do-named-dictionary';
+import { DoStringDictionary } from '../type/do-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { DoGlobalRulesService } from '../service/do-global-rules.service';
 import { TypedSimpleChanges } from '../type/typed-simple-changes';
+import { takeUntil } from 'rxjs/operators';
 
 interface IDoProvideRulesComponent {
   globalRules: DoStringDictionary<DoRuleType>;
@@ -28,12 +30,11 @@ interface IDoProvideRulesComponent {
   providers: [DoProvideRulesService],
 })
 export class DoProvideRulesComponent
-  implements OnChanges, IDoProvideRulesComponent, OnDestroy {
+  implements OnChanges, IDoProvideRulesComponent, OnDestroy, OnInit {
   @Input() globalRules: DoStringDictionary<DoRuleType> = {};
   @Input() rules: DoStringDictionary<DoRuleType> = {};
   @Input() roles: DoRoleType[];
 
-  rulesComputed: DoStringDictionary<DoRuleType> = {};
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -49,7 +50,10 @@ export class DoProvideRulesComponent
       changes.rules?.currentValue &&
       changes.rules?.currentValue !== changes.rules?.previousValue
     ) {
-      this.concatRules(changes.rules.currentValue || this.rules || {});
+      this.concatRules(
+        this.source?.provideRulesService.localRulesValue,
+        changes.rules.currentValue
+      );
     }
 
     if (
@@ -71,16 +75,20 @@ export class DoProvideRulesComponent
     return this.provideRulesService.can(ruleName, args);
   }
 
-  private concatRules(rules: DoStringDictionary<DoRuleType>): void {
-    this.rulesComputed = {
-      ...(this.source?.rulesComputed || {}),
-      ...(rules || {}),
-    };
-
-    this.provideRulesService.nextRules(this.rulesComputed);
-  }
-
   ngOnDestroy(): void {
     this.destroy$.next();
+  }
+
+  ngOnInit(): void {
+    this.source?.provideRulesService.rules$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((parentRules) => this.concatRules(parentRules, this.rules));
+  }
+
+  private concatRules(
+    parentRules: DoStringDictionary<DoRuleType>,
+    currentRules: DoStringDictionary<DoRuleType>
+  ): void {
+    this.provideRulesService.nextRules(parentRules || {}, currentRules || {});
   }
 }

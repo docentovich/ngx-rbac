@@ -15,19 +15,25 @@ export class DoProvideRulesService implements OnDestroy {
   > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
 
   private destroy$ = new Subject<void>();
-  rules$: Observable<
-    DoStringDictionary<DoRuleType>
-  > = this._rules$.asObservable();
+  rules$: Observable<DoStringDictionary<DoRuleType>> = this._rules$.asObservable();
 
   public get localRulesValue(): DoStringDictionary<DoRuleType> {
     return this._rules$.value;
   }
-  public get mergedRulesValue(): DoStringDictionary<DoRuleType> {
-    return { ...this.globalRulesService.rulesValue, ...this.localRulesValue };
+
+  public get mergedParentRulesValue(): DoStringDictionary<DoRuleType> {
+    return { ...this.globalRulesService.rulesAndPermissionsValue, ...this.parentRules };
   }
+
+  public get mergedRulesValue(): DoStringDictionary<DoRuleType> {
+    return { ...this.mergedParentRulesValue, ...this.localRulesValue };
+  }
+
   public get userRolesValue(): DoRoleType[] {
     return this.globalRulesService.userRolesValue;
   }
+
+  private parentRules: DoStringDictionary<DoRuleType>;
 
   changes$ = combineLatest([
     this.rules$,
@@ -55,19 +61,23 @@ export class DoProvideRulesService implements OnDestroy {
 
   can(ruleName: string, args?: any[]): any {
     return commonCan(
-      [
-        this.globalRulesService.userRolesValue,
-        this.mergedRulesValue,
-      ],
+      [this.globalRulesService.userRolesValue, this.mergedParentRulesValue],
       this.mergedRulesValue,
       ruleName,
       args
     );
   }
 
-  nextRules(rules: DoStringDictionary<DoRuleType>) {
+  nextRules(
+    parentRules: DoStringDictionary<DoRuleType>,
+    rules: DoStringDictionary<DoRuleType>
+  ) {
+    DoGlobalRulesService.nameRules(parentRules);
     DoGlobalRulesService.nameRules(rules);
-    this._rules$.next(rules);
+
+    this.parentRules = parentRules;
+    const concatRules = { ...parentRules, ...rules };
+    this._rules$.next(concatRules);
   }
 
   nextRoles(userRoles: DoRoleType[]) {
