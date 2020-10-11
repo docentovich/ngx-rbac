@@ -11,3 +11,7 @@ export interface DoStringDictionary<T> {
   [key: string]: T;
 }
 
+export type DoCheckersType = DoStringDictionary<DoCheckerType>;
+export type DoPermissionsType = DoStringDictionary<DoPermissionType>;
+export type DoRulesType = DoStringDictionary<DoRuleType>;
+export type DoRolesType = DoStringDictionary<DoRoleType>;

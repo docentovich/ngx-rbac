@@ -20,3 +20,8 @@ export { DoNamedDictionary, DoStringDictionary } from './lib/type/do-dictionary'
 export { Constructor } from './lib/type/constructor';
 export { DoCheckerFunction } from './lib/type/do-checker-function';
 export { DoRuleOptions, DoSuppressErrors }  from './lib/type/do-rule-options';
+
+export { DoCheckersType } from './lib/type/do-dictionary';
+export { DoPermissionsType } from './lib/type/do-dictionary';
+export { DoRulesType } from './lib/type/do-dictionary';
+export { DoRolesType } from './lib/type/do-dictionary';

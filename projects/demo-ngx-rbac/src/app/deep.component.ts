@@ -80,9 +80,7 @@ export class DeepComponent {
     },
     { suppressErrors: DoSuppressErrors.warnings }
   );
-  public static overrideRules = {
-    GUEST_CAN: doCreatRule([() => false]),
-  };
+  public static overrideRules = doCreatRule([() => false], 'GUEST_CAN');
 
   deepRules = { ...DeepComponent.deepRules, ...DeepComponent.suppressErrors };
   overrideRules = DeepComponent.overrideRules;
