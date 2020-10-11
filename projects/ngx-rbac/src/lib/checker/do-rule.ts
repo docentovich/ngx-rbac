@@ -65,3 +65,10 @@ export function doCreatRuleSet<T extends {
     return acc;
   }, {} as any);
 }
+
+export function doExtendRule(
+  args: AllPossibleCheckers[],
+  name: string
+): DoStringDictionary<DoRule> {
+  return doCreatRule([name, ...args], name);
+}

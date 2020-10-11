@@ -10,6 +10,7 @@ export { DoNgxRbacModule } from './lib/do-ngx-rbac.module';
 
 export { doCreatRule } from './lib/checker/do-rule';
 export { doCreatRuleSet } from './lib/checker/do-rule';
+export { doExtendRule } from './lib/checker/do-rule';
 export { doCreatRole } from './lib/checker/do-role';
 
 export { DoRoleType } from './lib/type/do-role-type';
