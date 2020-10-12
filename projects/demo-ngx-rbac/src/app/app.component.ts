@@ -7,6 +7,24 @@ import {
   DoRoleType,
 } from '@do/ngx-rbac';
 
+export const guest: DoRoleType = doCreatRole('GUEST');
+export const moderator: DoRoleType = doCreatRole('MODERATOR');
+moderator.addChild(guest);
+export const admin: DoRoleType = doCreatRole('ADMIN');
+admin.addChild(moderator);
+
+export const rules = doCreatRuleSet({
+  GUARD_RULE: [admin],
+  GUEST_and_ADMIN: [guest],
+  IS_MODERATOR: [moderator],
+  CHAIN_GLOBAL_WITH_STRING_RULE: [
+    (args) => {
+      return args[1] === 'and global';
+    },
+  ],
+  ONLY_GUEST: [guest, doNot(moderator)],
+});
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,29 +32,14 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  public static guest: DoRoleType = doCreatRole('GUEST');
-  public static moderator: DoRoleType = doCreatRole('MODERATOR', AppComponent.guest);
-  public static admin: DoRoleType = doCreatRole('ADMIN', AppComponent.moderator);
-
-  public static rules = doCreatRuleSet({
-    GUARD_RULE: [AppComponent.admin],
-    GUEST_and_ADMIN: [AppComponent.guest],
-    IS_MODERATOR: [AppComponent.moderator],
-    CHAIN_GLOBAL_WITH_STRING_RULE: [
-      (args) => {
-        return args[1] === 'and global';
-      },
-    ],
-    ONLY_GUEST: [AppComponent.guest, doNot(AppComponent.moderator)],
-  });
-  guest: DoRoleType = AppComponent.guest;
-  admin: DoRoleType = AppComponent.admin;
-  moderator: DoRoleType = AppComponent.moderator;
+  guest: DoRoleType = guest;
+  admin: DoRoleType = admin;
+  moderator: DoRoleType = moderator;
   myRoles = [this.admin];
-  rules = AppComponent.rules;
+  rules = rules;
 
   constructor(public doGlobalRulesService: DoGlobalRulesService) {
-    doGlobalRulesService.addGlobalRules(AppComponent.rules);
+    doGlobalRulesService.addGlobalRules(rules);
   }
 
   doNothing() {

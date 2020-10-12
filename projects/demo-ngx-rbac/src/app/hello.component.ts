@@ -1,6 +1,17 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
-import { doCreatRuleSet, DoGlobalRulesService, DoProvideRulesComponent, DoRoleType } from '@do/ngx-rbac';
-import { AppComponent } from './app.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  Optional,
+  SkipSelf,
+} from '@angular/core';
+import {
+  doCreatRuleSet,
+  DoGlobalRulesService,
+  DoProvideRulesComponent,
+} from '@do/ngx-rbac';
+import { admin, guest } from './app.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -16,8 +27,8 @@ import { takeUntil } from 'rxjs/operators';
     <do-provide-rules [rules]="rules">
       can GUEST: {{ 'GUEST_CAN' | doCan }}<br />
       can ADMIN: {{ 'ADMIN_CAN' | doCan }}<br />
-      can inherited_GUEST_CAN: {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br />
-      can inherited_GUEST_CAN: {{ 'inherited_ADMIN_CAN' | doCan: 2:2 }}<br />
+      can inherited_GUEST_CAN (1:2): {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br />
+      can inherited_GUEST_CAN (2:2): {{ 'inherited_ADMIN_CAN' | doCan: 2:2 }}<br />
       <br />
       <app-deep></app-deep>
     </do-provide-rules>
@@ -32,9 +43,9 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class HelloComponent implements OnInit, OnDestroy {
   public static rules1 = doCreatRuleSet({
-    GUEST_CAN: [AppComponent.guest],
-    ADMIN_CAN: [AppComponent.admin],
-    CHAIN_WITH_STRING_RULE: [AppComponent.admin],
+    GUEST_CAN: [guest],
+    ADMIN_CAN: [admin],
+    CHAIN_WITH_STRING_RULE: [admin],
   });
 
   public static inheritedRules = doCreatRuleSet({

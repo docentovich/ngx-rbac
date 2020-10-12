@@ -11,9 +11,6 @@ export function commonCan(
   const rule: DoRuleType = Object.values(rulesComputed).find(
     (r) => r.name === ruleName
   );
-  if (!rule) {
-    throw Error('No rule for ' + ruleName);
-  }
 
-  return rule.check(args, dependency);
+  return !!rule ? rule.check(args, dependency) : false;
 }

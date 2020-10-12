@@ -17,12 +17,27 @@ export class DoGlobalRulesService {
     DoStringDictionary<DoRuleType>
   > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
 
+  private _permitted$: BehaviorSubject<
+    DoStringDictionary<DoRuleType>
+  > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
+
   rules$: Observable<
     DoStringDictionary<DoRuleType>
   > = this._rules$.asObservable();
   userRoles$: Observable<DoRoleType[]> = this._userRoles$.asObservable();
-  changes$ = combineLatest([this.rules$, this.userRoles$]).pipe(
-    map(([globalRules, userRoles]) => ({ globalRules, userRoles }))
+  permitted$: Observable<
+    DoStringDictionary<DoRuleType>
+  > = this._permitted$.asObservable();
+
+  changes$ = combineLatest([
+    this.permitted$,
+    this.rules$,
+    this.userRoles$,
+  ]).pipe(
+    map(([permissions, globalRules, userRoles]) => ({
+      globalRules: { ...permissions, ...globalRules },
+      userRoles,
+    }))
   );
 
   // todo check if possible mutation
@@ -34,8 +49,16 @@ export class DoGlobalRulesService {
     return this._userRoles$.value;
   }
 
+  public get permissionsValue(): DoStringDictionary<DoRuleType> {
+    return this._permitted$.value;
+  }
+
   public get rulesValue(): DoStringDictionary<DoRuleType> {
     return this._rules$.value;
+  }
+
+  public get rulesAndPermissionsValue(): DoStringDictionary<DoRuleType> {
+    return { ...this.permissionsValue, ...this.rulesValue };
   }
 
   addGlobalRules(rules: DoStringDictionary<DoRuleType>) {
@@ -47,13 +70,22 @@ export class DoGlobalRulesService {
   }
 
   changeRoles(userRoles: DoRoleType[]) {
+    this._permitted$.next(
+      userRoles.reduce(
+        (acc: DoStringDictionary<DoRuleType>, userRole) => ({
+          ...acc,
+          ...userRole.can,
+        }),
+        {}
+      )
+    );
     this._userRoles$.next(userRoles);
   }
 
   can(ruleName: string, ...args: any[]): any {
     return commonCan(
-      [this.userRolesValue, this.rulesValue],
-      this.rulesValue,
+      [this.userRolesValue, this.rulesAndPermissionsValue],
+      this.rulesAndPermissionsValue,
       ruleName,
       args
     );
@@ -68,19 +100,23 @@ export class DoGlobalRulesService {
     ruleNames.forEach((ruleName) => {
       delete rules[ruleName];
     });
-    this._rules$.next(rules);
+    this._rules$.next(this.filterRule((rule) => ruleNames.includes(rule.name)));
   }
 
   removeGlobalRulesByGroupName(groupName: string): void {
-    const rules = Object.entries(this._rules$.value).reduce(
-      (acc: DoStringDictionary<DoRuleType>, [nextRuleName, nextRule]) => {
-        if (nextRule.options.groupName !== groupName) {
-          acc[nextRuleName] = nextRule;
-        }
-        return acc;
-      },
-      {}
+    this._rules$.next(
+      this.filterRule((rule) => rule.options.groupName !== groupName)
     );
-    this._rules$.next(rules);
+  }
+
+  private filterRule(
+    needAddMethod: (rule: DoRuleType) => boolean
+  ): DoStringDictionary<DoRuleType> {
+    return Object.values(this._rules$.value).reduce((acc, nextRule) => {
+      return {
+        ...acc,
+        ...(needAddMethod(nextRule) ? { [nextRule.name]: nextRule } : {}),
+      };
+    }, {});
   }
 }

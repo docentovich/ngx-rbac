@@ -1,6 +1,5 @@
-import { DoCheckerType } from './do-checker-type';
+import { DoRolePermissionType } from './do-role-permission-type';
 
-export interface DoRoleType extends DoCheckerType {
-  canRoles: string[];
-  inheritedRole?: DoRoleType[];
+export interface DoRoleType extends DoRolePermissionType {
+  addChild(child: DoRolePermissionType): void;
 }

@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { DoProvideRulesComponent } from '../component/do-provide-rules.component';
 import { AllPossibleCheckers } from '../type/do-checker-function';
-import { DoChecker } from '../checker/do-checker';
+import { DoRule } from '../model/do-rule';
 
 @Pipe({
   name: 'doCan',
@@ -48,7 +48,7 @@ export class DoCanPipe implements PipeTransform, OnDestroy {
     if (!this.markForTransform) {
       return this.value;
     }
-    if (!(typeof rule === 'string' || (rule as any) instanceof DoChecker)) {
+    if (!(typeof rule === 'string' || (rule as any) instanceof DoRule)) {
       throw Error('Transformed value must be string or DoChecker type but get: ' + typeof rule);
     }
     this.value = this.source?.provideRulesService.can(rule.toString(), args);

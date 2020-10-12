@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HelloComponent } from './hello.component';
-import { doCreatRule, doCreatRuleSet, doNot, DoSuppressErrors } from '@do/ngx-rbac';
+import { doCreatRule, doCreatRuleSet, doNot, DoAbsentRuleBehavior } from '@do/ngx-rbac';
 
 @Component({
   selector: 'app-deep',
@@ -78,7 +78,7 @@ export class DeepComponent {
         },
       ],
     },
-    { suppressErrors: DoSuppressErrors.warnings }
+    { absentRuleBehavior: DoAbsentRuleBehavior.warnings }
   );
   public static overrideRules = doCreatRule([() => false], 'GUEST_CAN');
 

@@ -1,15 +1,16 @@
-export enum DoSuppressErrors {
+export enum DoAbsentRuleBehavior {
   allErrors,
   warnings,
-  none,
+  fails,
+  ignore,
 }
 
 export interface DoRuleOptions {
-  suppressErrors?: DoSuppressErrors;
+  absentRuleBehavior?: DoAbsentRuleBehavior;
   groupName?: string;
 }
 
-export const DefaultOptions: DoRuleOptions = {
-  suppressErrors: DoSuppressErrors.none,
+export const DefaultRuleOptions: DoRuleOptions = {
+  absentRuleBehavior: DoAbsentRuleBehavior.fails,
   groupName: 'no-group',
 };
