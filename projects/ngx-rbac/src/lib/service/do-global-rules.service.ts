@@ -9,45 +9,22 @@ import { commonCan } from '../helper/common-can';
 
 @Injectable({ providedIn: 'root' })
 export class DoGlobalRulesService {
-  private _userRoles$: BehaviorSubject<DoRoleType[]> = new BehaviorSubject<
-    DoRoleType[]
-  >([]);
-
+  /** Rules getters */
   private _rules$: BehaviorSubject<
     DoStringDictionary<DoRuleType>
-  > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
+    > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
 
   private _permitted$: BehaviorSubject<
     DoStringDictionary<DoRuleType>
-  > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
+    > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
 
   rules$: Observable<
     DoStringDictionary<DoRuleType>
-  > = this._rules$.asObservable();
-  userRoles$: Observable<DoRoleType[]> = this._userRoles$.asObservable();
+    > = this._rules$.asObservable();
   permitted$: Observable<
     DoStringDictionary<DoRuleType>
-  > = this._permitted$.asObservable();
+    > = this._permitted$.asObservable();
 
-  changes$ = combineLatest([
-    this.permitted$,
-    this.rules$,
-    this.userRoles$,
-  ]).pipe(
-    map(([permissions, globalRules, userRoles]) => ({
-      globalRules: { ...permissions, ...globalRules },
-      userRoles,
-    }))
-  );
-
-  // todo check if possible mutation
-  public static nameRules(rules: DoStringDictionary<DoRuleType>): void {
-    Object.entries(rules).forEach(([name, rule]) => rule.setName(name));
-  }
-
-  public get userRolesValue(): DoRoleType[] {
-    return this._userRoles$.value;
-  }
 
   public get permissionsValue(): DoStringDictionary<DoRuleType> {
     return this._permitted$.value;
@@ -61,6 +38,44 @@ export class DoGlobalRulesService {
     return { ...this.permissionsValue, ...this.rulesValue };
   }
 
+  /** Roles getters */
+  private _roles$: BehaviorSubject<DoRoleType[]> = new BehaviorSubject<
+    DoRoleType[]
+  >([]);
+
+  roles$: Observable<DoRoleType[]> = this._roles$.asObservable();
+
+  public get rolesValue(): DoRoleType[] {
+    return this._roles$.value;
+  }
+
+
+  changes$ = combineLatest([
+    this.permitted$,
+    this.rules$,
+    this.roles$,
+  ]).pipe(
+    map(([permissions, globalRules, roles]) => ({
+      globalRules: { ...permissions, ...globalRules },
+      roles,
+    }))
+  );
+
+  // todo check if possible mutation
+  public static nameRules(rules: DoStringDictionary<DoRuleType>): void {
+    Object.entries(rules).forEach(([name, rule]) => rule.setName(name));
+  }
+
+  public static permitted(roles: DoRoleType[]) {
+    return roles.reduce(
+      (acc: DoStringDictionary<DoRuleType>, role) => ({
+        ...acc,
+        ...role.can,
+      }),
+      {}
+    );
+  }
+
   addGlobalRules(rules: DoStringDictionary<DoRuleType>, replaceGroupName?: string) {
     DoGlobalRulesService.nameRules(rules);
     if (replaceGroupName !== undefined) {
@@ -72,22 +87,16 @@ export class DoGlobalRulesService {
     });
   }
 
-  changeRoles(userRoles: DoRoleType[]) {
+  changeRoles(roles: DoRoleType[]) {
     this._permitted$.next(
-      userRoles.reduce(
-        (acc: DoStringDictionary<DoRuleType>, userRole) => ({
-          ...acc,
-          ...userRole.can,
-        }),
-        {}
-      )
+      DoGlobalRulesService.permitted(roles)
     );
-    this._userRoles$.next(userRoles);
+    this._roles$.next(roles);
   }
 
   can(ruleName: string, ...args: any[]): any {
     return commonCan(
-      [this.userRolesValue, this.rulesAndPermissionsValue],
+      [this.rolesValue, this.rulesAndPermissionsValue],
       this.rulesAndPermissionsValue,
       ruleName,
       args

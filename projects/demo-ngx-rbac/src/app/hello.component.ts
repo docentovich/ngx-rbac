@@ -19,25 +19,25 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'app-hello',
   template: `
     <h1>
-      hello {{ ((doGlobalRulesService?.changes$ | async)?.userRoles)[0]?.name }}
+      hello {{ ((source?.provideRulesService.changes$ | async)?.roles)[0]?.name }}
     </h1>
 
-    <hr />
+    <hr/>
 
     <do-provide-rules [rules]="rules">
-      can GUEST: {{ 'GUEST_CAN' | doCan }}<br />
-      can ADMIN: {{ 'ADMIN_CAN' | doCan }}<br />
-      can inherited_GUEST_CAN (1:2): {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br />
-      can inherited_GUEST_CAN (2:2): {{ 'inherited_ADMIN_CAN' | doCan: 2:2 }}<br />
-      <br />
+      can GUEST: {{ 'GUEST_CAN' | doCan }}<br/>
+      can ADMIN: {{ 'ADMIN_CAN' | doCan }}<br/>
+      can inherited_GUEST_CAN (1:2): {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br/>
+      can inherited_GUEST_CAN (2:2): {{ 'inherited_ADMIN_CAN' | doCan: 2:2 }}<br/>
+      <br/>
       <app-deep></app-deep>
     </do-provide-rules>
 
-    <hr />
-    <a routerLink="/route1">only admin</a><br />
-    <a routerLink="/route2">only guest</a><br />
-    <a routerLink="/route3">guest</a><br />
-    <a routerLink="/route4">moderator</a><br />
+    <hr/>
+    <a routerLink="/route1">only admin</a><br/>
+    <a routerLink="/route2">only guest</a><br/>
+    <a routerLink="/route3">guest</a><br/>
+    <a routerLink="/route4">moderator</a><br/>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -70,15 +70,15 @@ export class HelloComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(
       'static ' +
-        this.source?.provideRulesService.userRolesValue[0]?.name +
+        this.source?.provideRulesService.rolesValue[0]?.name +
         ' can GUARD_RULE ' +
         this.source?.provideRulesService.can('GUARD_RULE')
     );
     this.source?.provideRulesService.can$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ userRoles, can }) => {
+      .subscribe(({ roles, can }) => {
         console.log(
-          userRoles[0]?.name + ' can GUARD_RULE ' + can('GUARD_RULE')
+          roles[0]?.name + ' can GUARD_RULE ' + can('GUARD_RULE')
         );
       });
   }

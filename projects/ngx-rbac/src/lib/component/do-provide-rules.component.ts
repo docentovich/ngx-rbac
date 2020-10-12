@@ -13,12 +13,11 @@ import { DoProvideRulesService } from '../service/do-provide-rules.service';
 import { DoStringDictionary } from '../type/do-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
-import { DoGlobalRulesService } from '../service/do-global-rules.service';
 import { TypedSimpleChanges } from '../type/typed-simple-changes';
 import { takeUntil } from 'rxjs/operators';
 
 interface IDoProvideRulesComponent {
-  globalRules: DoStringDictionary<DoRuleType>;
+  // globalRules: DoStringDictionary<DoRuleType>;
   rules: DoStringDictionary<DoRuleType>;
   roles: DoRoleType[];
 }
@@ -31,7 +30,6 @@ interface IDoProvideRulesComponent {
 })
 export class DoProvideRulesComponent
   implements OnChanges, IDoProvideRulesComponent, OnDestroy, OnInit {
-  @Input() globalRules: DoStringDictionary<DoRuleType> = {};
   @Input() rules: DoStringDictionary<DoRuleType> = {};
   @Input() roles: DoRoleType[];
 
@@ -41,8 +39,7 @@ export class DoProvideRulesComponent
     @Optional()
     @SkipSelf()
     private source: DoProvideRulesComponent,
-    public provideRulesService: DoProvideRulesService,
-    private globalRulesService: DoGlobalRulesService
+    public provideRulesService: DoProvideRulesService
   ) {}
 
   ngOnChanges(changes: TypedSimpleChanges<IDoProvideRulesComponent>): void {
@@ -60,14 +57,10 @@ export class DoProvideRulesComponent
       changes.roles?.currentValue &&
       changes.roles?.currentValue !== changes.roles?.previousValue
     ) {
-      this.provideRulesService.nextRoles(changes.roles.currentValue);
-    }
-
-    if (
-      changes.globalRules?.currentValue &&
-      changes.globalRules?.currentValue !== changes.globalRules?.previousValue
-    ) {
-      this.globalRulesService.addGlobalRules(changes.globalRules.currentValue);
+      this.concatRoles(
+        this.source?.provideRulesService.localRolesValue,
+        changes.roles.currentValue
+      );
     }
   }
 
@@ -83,6 +76,9 @@ export class DoProvideRulesComponent
     this.source?.provideRulesService.rules$
       .pipe(takeUntil(this.destroy$))
       .subscribe((parentRules) => this.concatRules(parentRules, this.rules));
+    this.source?.provideRulesService.roles$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((parentRoles) => this.concatRoles(parentRoles, this.roles));
   }
 
   private concatRules(
@@ -90,5 +86,12 @@ export class DoProvideRulesComponent
     currentRules: DoStringDictionary<DoRuleType>
   ): void {
     this.provideRulesService.nextRules(parentRules || {}, currentRules || {});
+  }
+
+  private concatRoles(
+    parentRoles: DoRoleType[],
+    currentRoles: DoRoleType[]
+  ): void {
+    this.provideRulesService.nextRoles(parentRoles || [], currentRoles || []);
   }
 }

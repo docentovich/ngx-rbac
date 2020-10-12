@@ -10,50 +10,97 @@ import { commonCan } from '../helper/common-can';
 
 @Injectable()
 export class DoProvideRulesService implements OnDestroy {
-  private _rules$: BehaviorSubject<
+  private destroy$ = new Subject<void>();
+
+  /** Rules getters */
+  private _permitted$: BehaviorSubject<
     DoStringDictionary<DoRuleType>
   > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
+  private _rules$: BehaviorSubject<
+    DoStringDictionary<DoRuleType>
+  > = new BehaviorSubject({});
 
-  private destroy$ = new Subject<void>();
-  rules$: Observable<DoStringDictionary<DoRuleType>> = this._rules$.asObservable();
+  rules$: Observable<
+    DoStringDictionary<DoRuleType>
+  > = this._rules$.asObservable();
+  permitted$: Observable<
+    DoStringDictionary<DoRuleType>
+  > = this._permitted$.asObservable();
 
+  private parentRules: DoStringDictionary<DoRuleType>;
+
+  public get permissionsValue(): DoStringDictionary<DoRuleType> {
+    return this._permitted$.value;
+  }
+  // Rules: parent and current
   public get localRulesValue(): DoStringDictionary<DoRuleType> {
     return this._rules$.value;
   }
 
+  // Rules: global and parent
   public get mergedParentRulesValue(): DoStringDictionary<DoRuleType> {
-    return { ...this.globalRulesService.rulesAndPermissionsValue, ...this.parentRules };
+    return {
+      ...this.globalRulesService.rulesAndPermissionsValue,
+      ...this.parentRules,
+    };
   }
 
+  // Rules: global, parent and current
   public get mergedRulesValue(): DoStringDictionary<DoRuleType> {
-    return { ...this.mergedParentRulesValue, ...this.localRulesValue };
+    return {
+      ...this.globalRulesService.rulesAndPermissionsValue,
+      ...this.localRulesValue,
+    };
   }
 
-  public get userRolesValue(): DoRoleType[] {
-    return this.globalRulesService.userRolesValue;
+  // Rules: permissions, global, parent and current
+  public get mergedRulesAndPermissionsValue(): DoStringDictionary<DoRuleType> {
+    return { ...this.permissionsValue, ...this.mergedRulesValue };
   }
 
-  private parentRules: DoStringDictionary<DoRuleType>;
+  /** Roles getters */
+  private _roles$: BehaviorSubject<DoRoleType[]> = new BehaviorSubject([]);
+
+  roles$: Observable<DoRoleType[]> = this._roles$.asObservable();
+
+  private parentRoles: DoRoleType[];
+
+  // Roles: parent and current
+  public get localRolesValue(): DoRoleType[] {
+    return this._roles$.value;
+  }
+
+  // Roles: global and parent
+  public get mergedParentRolesValue(): DoRoleType[] {
+    return [...this.globalRulesService.rolesValue, ...this.parentRoles];
+  }
+  // Roles: global, parent and current
+  public get rolesValue(): DoRoleType[] {
+    return [...this.globalRulesService.rolesValue, ...this.localRolesValue];
+  }
 
   changes$ = combineLatest([
+    this.permitted$,
     this.rules$,
+    this.roles$,
     this.globalRulesService.changes$,
   ]).pipe(
     takeUntil(this.destroy$),
-    map(([localRules, { globalRules, userRoles }]) => ({
+    map(([permissions, localRules, localRoles, { globalRules, roles }]) => ({
       rules: {
+        ...permissions,
         ...globalRules,
         ...localRules,
       },
-      userRoles,
+      roles: [...roles, ...localRoles],
     }))
   );
 
   can$ = this.changes$.pipe(
-    map(({ rules, userRoles }) => ({
+    map(({ rules, roles }) => ({
       rules,
-      userRoles,
-      can: commonCan.bind(null, [userRoles], rules),
+      roles,
+      can: commonCan.bind(null, [roles], rules),
     }))
   );
 
@@ -61,8 +108,8 @@ export class DoProvideRulesService implements OnDestroy {
 
   can(ruleName: string, args?: any[]): any {
     return commonCan(
-      [this.globalRulesService.userRolesValue, this.mergedParentRulesValue],
-      this.mergedRulesValue,
+      [this.globalRulesService.rolesValue, this.mergedRulesAndPermissionsValue],
+      this.mergedRulesAndPermissionsValue,
       ruleName,
       args
     );
@@ -80,8 +127,11 @@ export class DoProvideRulesService implements OnDestroy {
     this._rules$.next(concatRules);
   }
 
-  nextRoles(userRoles: DoRoleType[]) {
-    this.globalRulesService.changeRoles(userRoles);
+  nextRoles(parentRoles: DoRoleType[], roles: DoRoleType[]) {
+    this.parentRoles = parentRoles;
+    const concatRoles = [...parentRoles, ...roles];
+    this._permitted$.next(DoGlobalRulesService.permitted(concatRoles));
+    this._roles$.next(concatRoles);
   }
 
   ngOnDestroy(): void {
