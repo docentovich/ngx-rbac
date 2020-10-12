@@ -6,12 +6,14 @@ export { DoGlobalRulesService } from './lib/service/do-global-rules.service';
 export { DoProvideRulesService } from './lib/service/do-provide-rules.service';
 export { DoNgxRbacModule } from './lib/do-ngx-rbac.module';
 
-export { doCreatRuleSet, doCreatRule } from './lib/model/do-rule';
-export { doExtendRule } from './lib/model/do-rule';
-export { doCreatRole } from './lib/model/do-role';
 export {
-  createPermissions,
-} from './lib/model/do-permission';
+  doCreatRuleSet,
+  doCreatRule,
+  doExtendRule,
+  doSimpleRule,
+} from './lib/model/do-rule';
+export { doCreatRole } from './lib/model/do-role';
+export { createPermissions } from './lib/model/do-permission';
 
 export { DoRoleType } from './lib/type/do-role-type';
 export { DoPermissionType } from './lib/type/do-permission-type';
@@ -23,7 +25,10 @@ export {
 } from './lib/type/do-dictionary';
 export { Constructor } from './lib/type/constructor';
 export { DoCheckerFunction } from './lib/type/do-checker-function';
-export { DoRuleOptions, DoAbsentRuleBehavior } from './lib/type/do-rule-options';
+export {
+  DoRuleOptions,
+  DoAbsentRuleBehavior,
+} from './lib/type/do-rule-options';
 
 export {
   DoPermissionsType,

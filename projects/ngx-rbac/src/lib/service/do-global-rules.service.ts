@@ -61,8 +61,11 @@ export class DoGlobalRulesService {
     return { ...this.permissionsValue, ...this.rulesValue };
   }
 
-  addGlobalRules(rules: DoStringDictionary<DoRuleType>) {
+  addGlobalRules(rules: DoStringDictionary<DoRuleType>, replaceGroupName?: string) {
     DoGlobalRulesService.nameRules(rules);
+    if (replaceGroupName !== undefined) {
+      this.removeGlobalRulesByGroupName(replaceGroupName);
+    }
     this._rules$.next({
       ...(this.rulesValue || {}),
       ...(rules || {}),
