@@ -21,18 +21,16 @@ export function doAnd(
     return null;
   }
   return new DoRule((args: any[], dependency: Dependency) => {
-    return anyCheckerToDoChecker(checkers).every(
-      safeRunCheck(
-        args,
-        dependency,
-        options,
-        [DoAbsentRuleBehavior.ignore, DoAbsentRuleBehavior.warnings].includes(
-          options.absentRuleBehavior
-        )
-          ? true
-          : false
-      )
-    );
+    return anyCheckerToDoChecker(checkers)
+      .map(safeRunCheck(args, dependency, options))
+      .every((val) =>
+        val === null
+          ? [
+              DoAbsentRuleBehavior.ignore,
+              DoAbsentRuleBehavior.warnings,
+            ].includes(options.absentRuleBehavior)
+          : val
+      );  // todo check ignore and warnings behavior
   }, name);
 }
 
@@ -46,9 +44,10 @@ export function doOr(
     return null;
   }
   return new DoRule((args: any[], dependency: Dependency) => {
-    return anyCheckerToDoChecker(checkers).some(
-      safeRunCheck(args, dependency, options, false)
-    );
+    return anyCheckerToDoChecker(checkers)
+      .map(safeRunCheck(args, dependency, options))
+      .filter((val) => val !== null)
+      .some((val) => val);  // todo check ignore and warnings behavior
   }, name);
 }
 
@@ -61,12 +60,10 @@ export function doNot(
     return null;
   }
   return new DoRule((args: any[], dependency: Dependency) => {
-    return !safeRunCheck(
-      args,
-      dependency,
-      options,
-      true
-    )(anyCheckerToDoChecker(Array.isArray(checker) ? checker : [checker])[0]);
+    return !anyCheckerToDoChecker(Array.isArray(checker) ? checker : [checker])
+      .map(safeRunCheck(args, dependency, options))
+      .filter((val) => val !== null)
+      .every((val) => val); // todo check ignore and warnings behavior
   }, name);
 }
 
@@ -85,8 +82,7 @@ function anyCheckerToDoChecker(checkers: AllPossibleCheckers[]): DoRule[] {
 function safeRunCheck(
   args: any[],
   dependency: Dependency,
-  options: DoRuleOptions,
-  returnDefault: boolean
+  options: DoRuleOptions
 ) {
   return (checker: DoRule) => {
     try {
@@ -98,7 +94,7 @@ function safeRunCheck(
         console.error(e.message);
       }
 
-      return returnDefault;
+      return null;
     }
   };
 }
