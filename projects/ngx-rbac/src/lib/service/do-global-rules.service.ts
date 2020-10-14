@@ -66,16 +66,6 @@ export class DoGlobalRulesService {
     Object.entries(rules).forEach(([name, rule]) => rule.setName(name));
   }
 
-  public static permitted(roles: DoRoleType[]) {
-    return roles.reduce(
-      (acc: DoStringDictionary<DoRuleType>, role) => ({
-        ...acc,
-        ...role.can,
-      }),
-      {}
-    );
-  }
-
   addGlobalRules(rules: DoStringDictionary<DoRuleType>, replaceGroupName?: string) {
     DoGlobalRulesService.nameRules(rules);
     if (replaceGroupName !== undefined) {
@@ -89,7 +79,7 @@ export class DoGlobalRulesService {
 
   changeRoles(roles: DoRoleType[]) {
     this._permitted$.next(
-      DoGlobalRulesService.permitted(roles)
+      permitted(roles)
     );
     this._roles$.next(roles);
   }
@@ -131,4 +121,14 @@ export class DoGlobalRulesService {
       };
     }, {});
   }
+}
+
+export function permitted(roles: DoRoleType[]): DoStringDictionary<DoRuleType> {
+  return roles.reduce(
+    (acc: DoStringDictionary<DoRuleType>, role) => ({
+      ...acc,
+      ...role.can,
+    }),
+    {}
+  );
 }

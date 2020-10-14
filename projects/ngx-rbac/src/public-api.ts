@@ -15,7 +15,10 @@ export {
   doSimpleRule,
 } from './lib/model/do-rule';
 export { doCreatRole } from './lib/model/do-role';
-export { createPermissions } from './lib/model/do-permission';
+export {
+  doCreatePermissions,
+  doCreatePermission,
+} from './lib/model/do-permission';
 
 export { DoRoleType } from './lib/type/do-role-type';
 export { DoPermissionType } from './lib/type/do-permission-type';

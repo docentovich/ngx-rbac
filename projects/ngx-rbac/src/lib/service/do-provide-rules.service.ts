@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 
-import { DoGlobalRulesService } from './do-global-rules.service';
+import { DoGlobalRulesService, permitted } from './do-global-rules.service';
 import { DoStringDictionary } from '../type/do-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
@@ -130,7 +130,7 @@ export class DoProvideRulesService implements OnDestroy {
   nextRoles(parentRoles: DoRoleType[], roles: DoRoleType[]) {
     this.parentRoles = parentRoles;
     const concatRoles = [...parentRoles, ...roles];
-    this._permitted$.next(DoGlobalRulesService.permitted(concatRoles));
+    this._permitted$.next(permitted(concatRoles));
     this._roles$.next(concatRoles);
   }
 

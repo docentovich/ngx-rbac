@@ -1,4 +1,4 @@
-import { DoStringDictionary } from '@do/ngx-rbac';
+import { DoStringDictionary } from './do-dictionary';
 import { DoRuleType } from './do-rule-type';
 
 export interface DoRolePermissionType {
