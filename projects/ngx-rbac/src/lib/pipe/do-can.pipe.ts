@@ -20,7 +20,7 @@ import { DoRule } from '../model/do-rule';
 export class DoCanPipe implements PipeTransform, OnDestroy {
   private destroy$ = new Subject<void>();
   private markForTransform = true;
-  private value: string;
+  private value: boolean;
 
   constructor(
     @Optional()
@@ -51,6 +51,7 @@ export class DoCanPipe implements PipeTransform, OnDestroy {
     if (!(typeof rule === 'string' || (rule as any) instanceof DoRule)) {
       throw Error('Transformed value must be string or DoChecker type but get: ' + typeof rule);
     }
+    // todo drop error if no provider
     this.value = this.source?.provideRulesService.can(rule.toString(), args);
     this.markForTransform = false;
     return this.value;

@@ -30,6 +30,9 @@ import { takeUntil } from 'rxjs/operators';
       can inherited_GUEST_CAN (1:2): {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br/>
       can inherited_GUEST_CAN (2:2): {{ 'inherited_ADMIN_CAN' | doCan: 2:2 }}<br/>
       <br/>
+      doCan IS_MODERATOR: <div [innerHTML]="'IS_MODERATOR' | doCan"></div>
+      doDebug IS_MODERATOR: <div [innerHTML]="'IS_MODERATOR' | doDebug"></div>
+      <br/><br/>
       <app-deep></app-deep>
     </do-provide-rules>
 

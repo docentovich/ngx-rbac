@@ -1,3 +1,5 @@
+import { DoDebugType } from './lib/type/do-debug-type';
+
 export { DoProvideRulesComponent } from './lib/component/do-provide-rules.component';
 export { DoCanGuard } from './lib/guard/do-can.guard';
 export { doAnd, doOr, doNot } from './lib/helper/logic-operator';
@@ -19,6 +21,7 @@ export { DoRoleType } from './lib/type/do-role-type';
 export { DoPermissionType } from './lib/type/do-permission-type';
 export { DoRolePermissionType } from './lib/type/do-role-permission-type';
 export { DoRuleType } from './lib/type/do-rule-type';
+export { DoDebugType } from './lib/type/do-debug-type';
 export {
   DoNamedDictionary,
   DoStringDictionary,

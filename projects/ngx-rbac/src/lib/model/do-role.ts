@@ -12,6 +12,10 @@ export class DoRole extends DoRolePermission {
   addRule(rule: DoRuleType) {
     this.can[rule.name] = rule;
   }
+
+  toString() {
+    return this.name;
+  }
 }
 
 export function doCreatRole(name: string): DoRoleType {

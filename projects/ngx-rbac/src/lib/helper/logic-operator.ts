@@ -20,8 +20,9 @@ export function doAnd(
   if (!checkers || checkers?.length === 0) {
     return null;
   }
-  return new DoRule((args: any[], dependency: Dependency) => {
-    return anyCheckerToDoChecker(checkers)
+  name += ' (' + checkers.map(checker => checker.toString()).join(', ') + ')';
+  const parentRule = new DoRule((args: any[], dependency: Dependency) => {
+    return anyCheckerToDoChecker(checkers, parentRule)
       .map(safeRunCheck(args, dependency, options))
       .every((val) =>
         val === null
@@ -30,8 +31,10 @@ export function doAnd(
               DoAbsentRuleBehavior.warnings,
             ].includes(options.absentRuleBehavior)
           : val
-      );  // todo check ignore and warnings behavior
+      ); // todo check ignore and warnings behavior
   }, name);
+
+  return parentRule;
 }
 
 export function doOr(
@@ -43,12 +46,15 @@ export function doOr(
   if (!checkers || checkers?.length === 0) {
     return null;
   }
-  return new DoRule((args: any[], dependency: Dependency) => {
-    return anyCheckerToDoChecker(checkers)
+  name += ' (' + checkers.map(checker => checker.toString()).join(', ') + ')';;
+  const parentRule = new DoRule((args: any[], dependency: Dependency) => {
+    return anyCheckerToDoChecker(checkers, parentRule)
       .map(safeRunCheck(args, dependency, options))
       .filter((val) => val !== null)
-      .some((val) => val);  // todo check ignore and warnings behavior
+      .some((val) => val); // todo check ignore and warnings behavior
   }, name);
+
+  return parentRule;
 }
 
 export function doNot(
@@ -59,24 +65,37 @@ export function doNot(
   if (!checker) {
     return null;
   }
-  return new DoRule((args: any[], dependency: Dependency) => {
-    return !anyCheckerToDoChecker(Array.isArray(checker) ? checker : [checker])
+  name += ' (' + checker.toString() + ')';
+  const parentRule = new DoRule((args: any[], dependency: Dependency) => {
+    return !anyCheckerToDoChecker(
+      Array.isArray(checker) ? checker : [checker],
+      parentRule
+    )
       .map(safeRunCheck(args, dependency, options))
       .filter((val) => val !== null)
       .every((val) => val); // todo check ignore and warnings behavior
   }, name);
+
+  return parentRule;
 }
 
-function anyCheckerToDoChecker(checkers: AllPossibleCheckers[]): DoRule[] {
+function anyCheckerToDoChecker(
+  checkers: AllPossibleCheckers[],
+  parentRule: DoRule
+): DoRule[] {
   return checkers
     .filter((chk) => !!chk)
-    .map((checker) =>
-      checker instanceof DoRule
-        ? checker
-        : typeof checker === 'string'
-        ? creatStringRule(checker)
-        : new DoRule(checker as DoCheckerFunction, name)
-    );
+    .map((checker) => {
+      const rule =
+        checker instanceof DoRule
+          ? checker
+          : typeof checker === 'string'
+            ? creatStringRule(checker)
+            : new DoRule(checker as DoCheckerFunction, `simple rule: ${checker}`);
+      parentRule.assignChildRules(rule);
+
+      return rule;
+    });
 }
 
 function safeRunCheck(
