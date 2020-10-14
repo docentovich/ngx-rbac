@@ -32,8 +32,13 @@ export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType 
     this._childes.push(child);
   }
 
-  addRule(rule: DoRuleType) {
-    this.can[rule.name] = rule;
+  addRule(rule: DoRuleType | DoStringDictionary<DoRuleType>) {
+    if (rule instanceof DoRule) {
+      this.can[rule.name] = rule;
+      return;
+    }
+
+    Object.values(rule).forEach((_rule) => (this.can[_rule.name] = _rule));
   }
 
   toString() {
