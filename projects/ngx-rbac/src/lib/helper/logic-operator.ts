@@ -10,6 +10,7 @@ import {
 } from '../type/do-rule-options';
 import { DoRuleType } from '../type/do-rule-type';
 import { creatStringRule, DoRule } from '../model/do-rule';
+import { DoRole } from '../model/do-role';
 
 export function doAnd(
   checkers: AllPossibleCheckers[],
@@ -20,7 +21,7 @@ export function doAnd(
   if (!checkers || checkers?.length === 0) {
     return null;
   }
-  name += ' (' + checkers.map(checker => checker.toString()).join(', ') + ')';
+  name += getCheckerName(checkers);
   const parentRule = new DoRule((args: any[], dependency: Dependency) => {
     return anyCheckerToDoChecker(checkers, parentRule)
       .map(safeRunCheck(args, dependency, options))
@@ -46,7 +47,7 @@ export function doOr(
   if (!checkers || checkers?.length === 0) {
     return null;
   }
-  name += ' (' + checkers.map(checker => checker.toString()).join(', ') + ')';;
+  name += getCheckerName(checkers);
   const parentRule = new DoRule((args: any[], dependency: Dependency) => {
     return anyCheckerToDoChecker(checkers, parentRule)
       .map(safeRunCheck(args, dependency, options))
@@ -65,7 +66,7 @@ export function doNot(
   if (!checker) {
     return null;
   }
-  name += ' (' + checker.toString() + ')';
+  name += getCheckerName([checker]);
   const parentRule = new DoRule((args: any[], dependency: Dependency) => {
     return !anyCheckerToDoChecker(
       Array.isArray(checker) ? checker : [checker],
@@ -90,8 +91,8 @@ function anyCheckerToDoChecker(
         checker instanceof DoRule
           ? checker
           : typeof checker === 'string'
-            ? creatStringRule(checker)
-            : new DoRule(checker as DoCheckerFunction, `simple rule: ${checker}`);
+          ? creatStringRule(checker)
+          : new DoRule(checker as DoCheckerFunction, `simple rule: ${checker}`);
       parentRule.assignChildRules(rule);
 
       return rule;
@@ -116,4 +117,23 @@ function safeRunCheck(
       return null;
     }
   };
+}
+
+function getCheckerName(checkers: AllPossibleCheckers[]) {
+  return (
+    ' (' +
+    checkers
+      .map((checker) => {
+        if (
+          checker instanceof DoRule ||
+          checker instanceof DoRole ||
+          typeof checker === 'string'
+        ) {
+          return checker.toString();
+        }
+        return '(function)';
+      })
+      .join(', ') +
+    ')'
+  );
 }

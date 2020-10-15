@@ -7,13 +7,15 @@ import { DoRule } from './do-rule';
 import { DoDebugType } from '../type/do-debug-type';
 
 export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType {
-  _childes: DoRolePermissionType[] = [];
+  private _childes: DoRolePermissionType[] = [];
+  private _assignedRules: DoStringDictionary<DoRuleType> = {};
 
   get can(): DoStringDictionary<DoRuleType> {
     return this._childes.reduce(
       (acc: DoStringDictionary<DoRuleType>, children) => ({
         ...this._canSelf,
         ...children.can,
+        ...this._assignedRules
       }),
       {}
     );
@@ -33,12 +35,15 @@ export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType 
   }
 
   addRule(rule: DoRuleType | DoStringDictionary<DoRuleType>) {
+    let _rule = rule;
     if (rule instanceof DoRule) {
-      this.can[rule.name] = rule;
-      return;
+      _rule = { [rule.name]: rule };
     }
 
-    Object.values(rule).forEach((_rule) => (this.can[_rule.name] = _rule));
+    Object.values(_rule).forEach((r) => {
+      this._assignedRules[r.name] = r;
+      this._canNamesSelf.push(r.name);
+    });
   }
 
   toString() {

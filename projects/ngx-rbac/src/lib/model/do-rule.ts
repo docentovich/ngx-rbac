@@ -125,6 +125,6 @@ export function creatStringRule(checkerName: string): DoRuleType {
     }
     parentRule.assignChildRules(rulesSnapshot[checkerName]);
     return rulesSnapshot[checkerName].check(args, [userRoles, rulesSnapshot]);
-  }, `look up for ${checkerName}`);
+  }, `Look up for ${checkerName}`);
   return parentRule;
 }
