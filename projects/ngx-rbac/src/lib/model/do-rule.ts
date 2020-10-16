@@ -41,7 +41,7 @@ export class DoRule implements DoRuleType, DoDebugType {
       (acc, childRule) => [...acc, ...childRule.traceNames],
       []
     );
-    return [this.name, ...(tracedNames || ['dumb-checker'])];
+    return [this.name, ...(tracedNames || ['Dumb checker'])];
   }
 
   public assignChildRules(childRule: DoRuleType): void {
@@ -51,10 +51,10 @@ export class DoRule implements DoRuleType, DoDebugType {
 
   constructor(
     checker: DoCheckerFunction | DoRuleType,
-    name: string = 'no-name rule',
+    name: string = 'No-name rule',
     options: DoRuleOptions = DefaultRuleOptions
   ) {
-    this.name = name || 'no-name-rule-model';
+    this.name = name || 'No-name rule';
     if (checker instanceof DoRule) {
       this.check = checker.check;
       this.assignChildRules(checker);

@@ -15,7 +15,7 @@ import { DoRole } from '../model/do-role';
 export function doAnd(
   checkers: AllPossibleCheckers[],
   options: DoRuleOptions = DefaultRuleOptions,
-  name = 'logical and'
+  name = 'Logical and'
 ): DoRuleType {
   checkers = checkers.filter((chk) => !!chk);
   if (!checkers || checkers?.length === 0) {
@@ -41,7 +41,7 @@ export function doAnd(
 export function doOr(
   checkers: AllPossibleCheckers[],
   options: DoRuleOptions = DefaultRuleOptions,
-  name = 'logical or'
+  name = 'Logical or'
 ): DoRuleType {
   checkers = checkers.filter((chk) => !!chk);
   if (!checkers || checkers?.length === 0) {
@@ -61,7 +61,7 @@ export function doOr(
 export function doNot(
   checker: AllPossibleCheckers,
   options: DoRuleOptions = DefaultRuleOptions,
-  name = 'logical not'
+  name = 'Logical not'
 ): DoRuleType {
   if (!checker) {
     return null;
@@ -92,7 +92,7 @@ function anyCheckerToDoChecker(
           ? checker
           : typeof checker === 'string'
           ? creatStringRule(checker)
-          : new DoRule(checker as DoCheckerFunction, `simple rule: ${checker}`);
+          : new DoRule(checker as DoCheckerFunction, `Simple rule: ${(checker as any).id} ${checker}`);
       parentRule.assignChildRules(rule);
 
       return rule;
