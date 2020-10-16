@@ -13,7 +13,6 @@ import { doCreatRule, doCreatRuleSet, doNot, DoAbsentRuleBehavior } from '@do/ng
           EXTENDED_RULE 5,10: {{ 'EXTENDED_RULE' | doCan: 5:10 }} <br />
           EXTENDED_RULE 10,10: {{ deepRules.EXTENDED_RULE | doCan: 10:10 }}
           <br /><br /><br />
-          overrideRules GUEST_CAN: {{ overrideRules.GUEST_CAN | doCan }} <br />
           CHAINED_RULE (cool): {{ 'CHAINED_RULE' | doCan: 'cool' }} <br />
           CHAINED_GLOBAL_RULE (cool, and global):
           {{ 'CHAINED_GLOBAL_RULE' | doCan: 'cool':'and global' }} <br />
