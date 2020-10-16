@@ -6,25 +6,25 @@ import { DoStringDictionary } from '../type/do-dictionary';
 import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { commonCan } from '../helper/common-can';
+import { DoRule } from '../model/do-rule';
 
 @Injectable({ providedIn: 'root' })
 export class DoGlobalRulesService {
   /** Rules getters */
   private _rules$: BehaviorSubject<
     DoStringDictionary<DoRuleType>
-    > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
+  > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
 
   private _permitted$: BehaviorSubject<
     DoStringDictionary<DoRuleType>
-    > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
+  > = new BehaviorSubject<DoStringDictionary<DoRuleType>>({});
 
   rules$: Observable<
     DoStringDictionary<DoRuleType>
-    > = this._rules$.asObservable();
+  > = this._rules$.asObservable();
   permitted$: Observable<
     DoStringDictionary<DoRuleType>
-    > = this._permitted$.asObservable();
-
+  > = this._permitted$.asObservable();
 
   public get permissionsValue(): DoStringDictionary<DoRuleType> {
     return this._permitted$.value;
@@ -49,12 +49,7 @@ export class DoGlobalRulesService {
     return this._roles$.value;
   }
 
-
-  changes$ = combineLatest([
-    this.permitted$,
-    this.rules$,
-    this.roles$,
-  ]).pipe(
+  changes$ = combineLatest([this.permitted$, this.rules$, this.roles$]).pipe(
     map(([permissions, globalRules, roles]) => ({
       globalRules: { ...permissions, ...globalRules },
       roles,
@@ -66,21 +61,25 @@ export class DoGlobalRulesService {
     Object.entries(rules).forEach(([name, rule]) => rule.setName(name));
   }
 
-  addGlobalRules(rules: DoStringDictionary<DoRuleType>, replaceGroupName?: string) {
-    DoGlobalRulesService.nameRules(rules);
+  addGlobalRules(
+    rules: DoStringDictionary<DoRuleType> | DoRuleType,
+    replaceGroupName?: string
+  ) {
+    if (rules instanceof DoRule) {
+      rules = { [rules.name]: rules };
+    }
+    DoGlobalRulesService.nameRules(rules as DoStringDictionary<DoRuleType>);
     if (replaceGroupName !== undefined) {
       this.removeGlobalRulesByGroupName(replaceGroupName);
     }
     this._rules$.next({
       ...(this.rulesValue || {}),
-      ...(rules || {}),
+      ...((rules as DoStringDictionary<DoRuleType>) || {}),
     });
   }
 
   changeRoles(roles: DoRoleType[]) {
-    this._permitted$.next(
-      permitted(roles)
-    );
+    this._permitted$.next(permitted(roles));
     this._roles$.next(roles);
   }
 

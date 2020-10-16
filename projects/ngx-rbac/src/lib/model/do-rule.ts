@@ -75,26 +75,21 @@ export class DoRule implements DoRuleType, DoDebugType {
 
 export function doCreatRule(
   name: string,
-  args: AllPossibleCheckers | AllPossibleCheckers[],
+  args: AllPossibleCheckers[],
   options?: DoRuleOptions
-): DoStringDictionary<DoRule> {
-  if (!Array.isArray(args)) {
-    args = [args];
-  }
-  return {
-    [name]: new DoRule(
-      DoRule.checkerFactory(args, options || DefaultRuleOptions),
-      name,
-      options
-    ),
-  };
+): DoRuleType {
+  return new DoRule(
+    DoRule.checkerFactory(args, options || DefaultRuleOptions),
+    name,
+    options
+  );
 }
 
 export function doSimpleRule(
   name: string,
   options?: DoRuleOptions
 ): DoStringDictionary<DoRule> {
-  return doCreatRule(name, () => true, options);
+  return { [name]: doCreatRule(name, [() => true], options) };
 }
 
 export function doCreatRuleSet<
@@ -105,7 +100,7 @@ export function doCreatRuleSet<
   return Object.entries(args).reduce(
     (acc, [name, checker]) => ({
       ...acc,
-      ...doCreatRule(name, checker, options),
+      [name]: doCreatRule(name, checker, options),
     }),
     {} as any
   );
@@ -115,7 +110,7 @@ export function doExtendRule(
   name: string,
   args: AllPossibleCheckers[]
 ): DoStringDictionary<DoRule> {
-  return doCreatRule(name, [name, ...args]);
+  return { [name]: doCreatRule(name, [name, ...args]) };
 }
 
 export function creatStringRule(checkerName: string): DoRuleType {

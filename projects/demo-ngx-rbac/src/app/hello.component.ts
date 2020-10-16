@@ -69,7 +69,10 @@ export class HelloComponent implements OnInit, OnDestroy {
     @SkipSelf()
     public source: DoProvideRulesComponent,
     public doGlobalRulesService: DoGlobalRulesService
-  ) {}
+  ) {
+    const r1 = doCreatRule('r1', [() => true]);
+    const r2 = doCreatRule('r2', [r1]);
+  }
 
   rules = { ...HelloComponent.rules1, ...HelloComponent.inheritedRules };
 

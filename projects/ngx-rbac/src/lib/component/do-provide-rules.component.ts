@@ -15,10 +15,10 @@ import { DoRuleType } from '../type/do-rule-type';
 import { DoRoleType } from '../type/do-role-type';
 import { TypedSimpleChanges } from '../type/typed-simple-changes';
 import { takeUntil } from 'rxjs/operators';
+import { DoRule } from '../model/do-rule';
 
 interface IDoProvideRulesComponent {
-  // globalRules: DoStringDictionary<DoRuleType>;
-  rules: DoStringDictionary<DoRuleType>;
+  rules: DoStringDictionary<DoRuleType> | DoRuleType;
   roles: DoRoleType[];
 }
 
@@ -30,7 +30,7 @@ interface IDoProvideRulesComponent {
 })
 export class DoProvideRulesComponent
   implements OnChanges, IDoProvideRulesComponent, OnDestroy, OnInit {
-  @Input() rules: DoStringDictionary<DoRuleType> = {};
+  @Input() rules: DoStringDictionary<DoRuleType> | DoRuleType = {};
   @Input() roles: DoRoleType[];
 
   private destroy$ = new Subject<void>();
@@ -83,9 +83,15 @@ export class DoProvideRulesComponent
 
   private concatRules(
     parentRules: DoStringDictionary<DoRuleType>,
-    currentRules: DoStringDictionary<DoRuleType>
+    currentRules: DoStringDictionary<DoRuleType> | DoRuleType
   ): void {
-    this.provideRulesService.nextRules(parentRules || {}, currentRules || {});
+    if (currentRules instanceof DoRule) {
+      currentRules = { [currentRules.name]: currentRules };
+    }
+    this.provideRulesService.nextRules(
+      parentRules || {},
+      (currentRules as DoStringDictionary<DoRuleType>) || {}
+    );
   }
 
   private concatRoles(

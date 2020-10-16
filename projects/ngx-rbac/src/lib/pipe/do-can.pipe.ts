@@ -12,6 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 import { DoProvideRulesComponent } from '../component/do-provide-rules.component';
 import { AllPossibleCheckers } from '../type/do-checker-function';
 import { DoRule } from '../model/do-rule';
+import { DoRuleType } from '../type/do-rule-type';
 
 @Pipe({
   name: 'doCan',
@@ -42,7 +43,7 @@ export class DoCanPipe implements PipeTransform, OnDestroy {
   }
 
   transform(
-    rule: string | AllPossibleCheckers[] | AllPossibleCheckers,
+    rule: string | AllPossibleCheckers[] | AllPossibleCheckers | DoRuleType,
     ...args: any[]
   ): any {
     if (!this.markForTransform) {
