@@ -131,7 +131,9 @@ function getCheckerName(checkers: AllPossibleCheckers[]) {
         ) {
           return checker.toString();
         }
-        return '(function)';
+        const id = Math.floor(Math.random() * 100);
+        (checker as any ).id = id;
+        return `{function ${id}}`;
       })
       .join(', ') +
     ')'

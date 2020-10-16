@@ -21,8 +21,16 @@ export class DoDebugPipe implements PipeTransform {
           typeof rule
       );
     }
+    try {
+      this.source?.provideRulesService.can(rule.toString(), []);
+    } catch (e) {}
     // todo drop error if no provider
-    return '<pre>' + this.source?.provideRulesService.mergedRulesAndPermissionsValue[rule]
-      .traceNames.join(' -> ') + '</pre>';
+    return (
+      '<pre>' +
+      this.source?.provideRulesService.mergedRulesAndPermissionsValue[
+        rule
+      ]?.traceNames.join(' <br/>-> ') +
+      '</pre>'
+    );
   }
 }

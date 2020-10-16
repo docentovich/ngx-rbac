@@ -7,9 +7,10 @@ import {
   SkipSelf,
 } from '@angular/core';
 import {
+  doCreatRule,
   doCreatRuleSet,
   DoGlobalRulesService,
-  DoProvideRulesComponent,
+  DoProvideRulesComponent
 } from '@do/ngx-rbac';
 import { admin, guest } from './app.component';
 import { Subject } from 'rxjs';
@@ -25,6 +26,7 @@ import { takeUntil } from 'rxjs/operators';
     <hr/>
 
     <do-provide-rules [rules]="rules">
+      Debug <div [innerHTML]="'TEST_STRING_RULE' | doDebug"></div><br/>
       can GUEST: {{ 'GUEST_CAN' | doCan }}<br/>
       can ADMIN: {{ 'ADMIN_CAN' | doCan }}<br/>
       can inherited_GUEST_CAN (1:2): {{ 'inherited_ADMIN_CAN' | doCan: 1:2 }}<br/>
@@ -55,9 +57,9 @@ export class HelloComponent implements OnInit, OnDestroy {
   });
 
   public static inheritedRules = doCreatRuleSet({
-    inherited_ADMIN_CAN: [
-      HelloComponent.rules1.ADMIN_CAN,
-      ([arg1, arg2], [userRoles]) => {
+    TEST_STRING_RULE: [
+      'CHAIN_GLOBAL_WITH_STRING_RULE',
+      ([arg1, arg2]) => {
         return arg1 === arg2;
       },
     ],
