@@ -30,7 +30,7 @@ export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType 
     );
   }
 
-  addChild(child: DoRolePermissionType) {
+  addPermissionsOf(child: DoRolePermissionType) {
     this._childes.push(child);
   }
 

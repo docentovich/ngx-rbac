@@ -9,9 +9,9 @@ import {
 
 export const guest: DoRoleType = doCreatRole('GUEST');
 export const moderator: DoRoleType = doCreatRole('MODERATOR');
-moderator.addChild(guest);
+moderator.addPermissionsOf(guest);
 export const admin: DoRoleType = doCreatRole('ADMIN');
-admin.addChild(moderator);
+admin.addPermissionsOf(moderator);
 
 export const rules = doCreatRuleSet({
   GUARD_RULE: [admin],
