@@ -22,6 +22,8 @@ export function doAnd(
     return null;
   }
   name += getCheckerName(checkers);
+  // todo check if possible memory leak
+  // todo add check on dev mode
   const parentRule = new DoRule((args: any[], dependency: Dependency) => {
     return anyCheckerToDoChecker(checkers, parentRule)
       .map(safeRunCheck(args, dependency, options))
@@ -48,6 +50,8 @@ export function doOr(
     return null;
   }
   name += getCheckerName(checkers);
+  // todo check if possible memory leak
+  // todo add check on dev mode
   const parentRule = new DoRule((args: any[], dependency: Dependency) => {
     return anyCheckerToDoChecker(checkers, parentRule)
       .map(safeRunCheck(args, dependency, options))
@@ -67,6 +71,8 @@ export function doNot(
     return null;
   }
   name += getCheckerName([checker]);
+  // todo check if possible memory leak
+  // todo add check on dev mode
   const parentRule = new DoRule((args: any[], dependency: Dependency) => {
     return !anyCheckerToDoChecker(
       Array.isArray(checker) ? checker : [checker],
