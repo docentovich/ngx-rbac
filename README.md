@@ -1,27 +1,216 @@
 # NgxRbac
+----
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.6.
 
-## Development server
+## Example use
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### <a id="initializeRole"></a>Initialize Roles
 
-## Code scaffolding
+```ts
+const enum roles {
+  unauthorized = '[ROLES] UNAUTHORIZED',
+  authorized = '[ROLES] AUTHORIZED',
+  moderator = '[ROLES] MODERATOR'
+}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+export const unauthorizedRole: DoRoleType = doCreateRole(roles.unauthorized);
+export const authorizedRole: DoRoleType = doCreateRole(roles.authorized);
+authorizedRole.addPermissionsOf(unauthorizedRole);
+export const moderatorRole: DoRoleType = doCreateRole(roles.moderator);
+moderatorRole.addPermissionsOf(authorizedRole);
+```
 
-## Build
+### <a id="setupRules"></a>Setup Rules
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```ts
+const enum rules {
+  isUnauthorized = '[RULES] IS_UNAUTHORIZED',
+  isAuthorized = '[RULES] IS_AUTHORIZED',
+  isModerator = '[RULES] IS_MODERATOR',
+}
 
-## Running unit tests
+export const ruleSet = doCreateRuleSet({
+  [rules.isUnauthorized]: [roles.unauthorized, doNot(roles.authorized), doNot(roles.moderator)],
+  [rules.isAuthorized]: [roles.authorized, doNot(roles.moderator)],
+  [rules.isModerator]: [roles.moderator]
+})
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```ts
+export class AppComponent {
+  constructor(public doGlobalRulesService: DoGlobalRulesService) {
+    doGlobalRulesService.addGlobalRules(ruleSet);
+  }
+}
+```
 
-## Running end-to-end tests
+### <a id="setupRouting"></a>Setup Routing
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```ts
+const routes: Routes = [
+  {
+    path: '',
+    component: AppComponent
+    children: [
+      {
+        path: 'singUpPath',
+        data: {
+          rules: [rules.isUnauthorized]
+        },
+        canActivate: [DoCanGuard],
+        component: SingUpComponent
+      },
+      {
+        path: 'singInPath',
+         data: {
+          rules: [rules.isUnauthorized]
+        },
+        canActivate: [DoCanGuard],
+        component: SingInComponent
+      },
+      {
+        path: 'userHomePagePath/:userId',
+         data: {
+          rules: [rules.isAuthorized]
+        },
+        canActivate: [DoCanGuard],
+        component: UserHomePageComponent
+      },
+      {
+        path: 'CMSPagePath',
+         data: {
+          rules: [rules.isModerator]
+        },
+        canActivate: [DoCanGuard],
+        component: CMSPageComponent
+      }
+    ]
+  }
+]
+```
 
-## Further help
+### <a id="checkAccess"></a>Check the access
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```ts
+```
+
+```html
+```
+
+## Component
+
+```html 
+<do-provide-rules></do-provide-rules>
+```
+
+| Properties | Type | Description |
+| --- | --- | --- |
+| rules | [DoStringDictionary](#DoStringDictionary)\<[DoRuleType](#DoRuleType)> \| [DoRuleType](#DoRuleType) |  |
+| roles | [DoRuleType](#DoRuleType)[] |  |
+
+## Guard
+
+```ts
+DoCanGuard
+```
+
+| Properties | Type | Description |
+| --- | --- | --- |
+| rules | string[] |  |
+
+
+## Pipe
+
+`doCan`
+
+| Properties | Type | Description |
+| --- | --- | --- |
+| rules | string \| [AllPossibleCheckers](#AllPossibleCheckers)[] \| [AllPossibleCheckers](#AllPossibleCheckers) \| [DoRuleType](#DoRuleType) |  |
+
+
+## Functions
+
+`doCreateRole`
+
+| Type | Description |
+| --- | --- |
+| string |  |
+
+`doCreateRuleSet`
+
+| Type | Description |
+| --- | --- |
+| [RuleSet](#RuleSet) |  |
+
+`doCreateRule`
+
+| Type | Description |
+| --- | --- |
+| string |  |
+| [AllPossibleCheckers](#AllPossibleCheckers)[] |  |
+| Optional\<[DoRuleOptions](#DoRuleOptions)> |  |
+
+`doNot`
+
+| Type | Description |
+| --- | --- |
+| [AllPossibleCheckers](#AllPossibleCheckers) |  |
+| Optional\<[DoRuleOptions](#DoRuleOptions)> |  |
+| Optional\<string> |  |
+
+
+
+----
+### <a id="DoStringDictionary"></a>DoStringDictionary
+
+
+### <a id="DoRuleType"></a>DoRuleType 
+
+
+### <a id="AllPossibleCheckers"></a>AllPossibleCheckers
+
+
+### <a id="RuleSet"></a>RuleSet
+```ts
+{
+    [roleName: string]: [AllPossibleCheckers](#AllPossibleCheckers)[]
+}
+```
+
+### <a id="DoRuleOptions"></a>DoRuleOptions
+
+### <a id="DoCheckerFunction"></a>DoCheckerFunction
+```ts
+(args: any[], dependency: Dependency) => boolean
+```
+
+### <a id="Dependency"></a>Dependency
+```ts
+export type Dependency = [DoRoleType[], DoStringDictionary<DoRuleType>];
+```
+
+### <a id="DoRuleType"></a>DoRuleType
+```ts
+{
+    addPermissionsOf(child: DoRolePermissionType): void;
+    addRule(rule: DoRuleType | DoStringDictionary<DoRuleType>): void;
+}
+```
+
+
+### <a id="DoStringDictionary"></a>DoStringDictionary\<T>
+```ts
+{
+    [key: string]: T;
+}
+```
+
+### <a id="DoRolePermissionType"></a>DoRolePermissionType
+```ts
+{
+    can: DoStringDictionary<DoRuleType>;
+    canNames: string[];
+    name: string;
+}
+```
+
