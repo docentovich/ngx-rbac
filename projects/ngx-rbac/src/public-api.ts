@@ -8,12 +8,12 @@ export { DoProvideRulesService } from './lib/service/do-provide-rules.service';
 export { DoNgxRbacModule } from './lib/do-ngx-rbac.module';
 
 export {
-  doCreatRuleSet,
-  doCreatRule,
+  doCreateRuleSet,
+  doCreateRule,
   doExtendRule,
   doSimpleRule,
 } from './lib/model/do-rule';
-export { doCreatRole } from './lib/model/do-role';
+export { doCreateRole } from './lib/model/do-role';
 export {
   doCreatePermissions,
   doCreatePermission,

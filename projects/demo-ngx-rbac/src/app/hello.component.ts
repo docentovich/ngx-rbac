@@ -7,8 +7,8 @@ import {
   SkipSelf,
 } from '@angular/core';
 import {
-  doCreatRule,
-  doCreatRuleSet,
+  doCreateRule,
+  doCreateRuleSet,
   DoGlobalRulesService,
   DoProvideRulesComponent
 } from '@do/ngx-rbac';
@@ -50,13 +50,13 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HelloComponent implements OnInit, OnDestroy {
-  public static rules1 = doCreatRuleSet({
+  public static rules1 = doCreateRuleSet({
     GUEST_CAN: [guest],
     ADMIN_CAN: [admin],
     CHAIN_WITH_STRING_RULE: [admin],
   });
 
-  public static inheritedRules = doCreatRuleSet({
+  public static inheritedRules = doCreateRuleSet({
     TEST_STRING_RULE: [
       'CHAIN_GLOBAL_WITH_STRING_RULE',
       ([arg1, arg2]) => {
@@ -72,8 +72,8 @@ export class HelloComponent implements OnInit, OnDestroy {
     public source: DoProvideRulesComponent,
     public doGlobalRulesService: DoGlobalRulesService
   ) {
-    const r1 = doCreatRule('r1', [() => true]);
-    const r2 = doCreatRule('r2', [r1]);
+    const r1 = doCreateRule('r1', [() => true]);
+    const r2 = doCreateRule('r2', [r1]);
   }
 
   rules = { ...HelloComponent.rules1, ...HelloComponent.inheritedRules };

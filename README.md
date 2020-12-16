@@ -1,50 +1,83 @@
 # NgxRbac
 ----
 
+Roles and rules based access control library for angular version ?.
 
-## Example use
+* [Installation](#installation)
+* [Initialize Roles](#initializeRole)
+* [Setup Rules](#setupRules)
+* [Setup Routing](#setupRouting)
+* [Check the access](#checkTheAccess)
+* [Tools](#tools)
+* [Explanations](#explanations)
 
-### <a id="initializeRole"></a>Initialize Roles
+
+## Installation
+
+To install this library, run:
+
+```bash
+$ npm install ? --save 
+```
+
+## <a id="initializeRole"></a>Initialize Roles
 
 ```ts
-const enum roles {
+// All roles that should be in use in the App
+export const enum roles {
   unauthorized = '[ROLES] UNAUTHORIZED',
   authorized = '[ROLES] AUTHORIZED',
   moderator = '[ROLES] MODERATOR'
 }
 
+// Initialize base role for an unauthorized user  
 export const unauthorizedRole: DoRoleType = doCreateRole(roles.unauthorized);
+// Initialize common role for authorized 
 export const authorizedRole: DoRoleType = doCreateRole(roles.authorized);
+// Add all permissions that have a user with the unauthorized user role to the authorized
 authorizedRole.addPermissionsOf(unauthorizedRole);
+// Initialize the most privileged role for the moderator  
 export const moderatorRole: DoRoleType = doCreateRole(roles.moderator);
+// Add all permissions that have a user with the authorized user role to the moderator
 moderatorRole.addPermissionsOf(authorizedRole);
 ```
 
-### <a id="setupRules"></a>Setup Rules
+## <a id="setupRules"></a>Setup Rules
 
 ```ts
-const enum rules {
-  isUnauthorized = '[RULES] IS_UNAUTHORIZED',
-  isAuthorized = '[RULES] IS_AUTHORIZED',
-  isModerator = '[RULES] IS_MODERATOR',
+import { roles } form './roles.ts'
+
+// The rules, that will be used in the App
+export const enum rules {
+  isUnauthorized = '[RULES] IS_UNAUTHORIZED', // check is user is unauthorized 
+  isAuthorized = '[RULES] IS_AUTHORIZED',     // check is user is authorized
+  isModerator = '[RULES] IS_MODERATOR',       // check is user is moderator
 }
 
+// Define the conditions by the witch the rules will be checks   
 export const ruleSet = doCreateRuleSet({
-  [rules.isUnauthorized]: [roles.unauthorized, doNot(roles.authorized), doNot(roles.moderator)],
-  [rules.isAuthorized]: [roles.authorized, doNot(roles.moderator)],
-  [rules.isModerator]: [roles.moderator]
+  [rules.isUnauthorized]: [
+    roles.unauthorized, 
+    doNot(roles.authorized), 
+    doNot(roles.moderator)
+],                                       // The Rule only for users with unauthorized Role
+  [rules.isAuthorized]: [roles.authorized, doNot(roles.moderator)], // The Rule only for users with authorized Role
+  [rules.isModerator]: [roles.moderator] // The Rule only for users with moderator Role
 })
 ```
 
 ```ts
+import { DoGlobalRulesService } from '?'
+import { ruleSet } from './ruleSet.ts'
+
 export class AppComponent {
-  constructor(public doGlobalRulesService: DoGlobalRulesService) {
-    doGlobalRulesService.addGlobalRules(ruleSet);
+  constructor(private readonly doGlobalRulesService: DoGlobalRulesService) {
+    doGlobalRulesService.addGlobalRules(ruleSet); // Add global Rules to the pull of global rules  
   }
 }
 ```
 
-### <a id="setupRouting"></a>Setup Routing
+## <a id="setupRouting"></a>Setup Routing
 
 ```ts
 const routes: Routes = [
@@ -89,15 +122,18 @@ const routes: Routes = [
 ]
 ```
 
-### <a id="checkAccess"></a>Check the access
+## <a id="checkTheAccess"></a>Check the access
 
-```ts
-```
 
 ```html
+<user-card>
+  <h2>{{user.name}}</h2>
+  <a href="" [doCan]="CAN_EDIT">Edit</a>
+</user-card>
 ```
 
-## Component
+## Tools
+### Component
 
 ```html 
 <do-provide-rules></do-provide-rules>
@@ -108,72 +144,59 @@ const routes: Routes = [
 | rules | [DoStringDictionary](#DoStringDictionary)\<[DoRuleType](#DoRuleType)> \| [DoRuleType](#DoRuleType) |  |
 | roles | [DoRuleType](#DoRuleType)[] |  |
 
-## Guard
+### Guard
 
 ```ts
 DoCanGuard
 ```
 
-| Properties | Type | Description |
+| Arguments | Type | Description |
 | --- | --- | --- |
 | rules | string[] |  |
 
 
-## Pipe
+### Pipe
 
 `doCan`
 
-| Properties | Type | Description |
+| Arguments | Type | Description |
 | --- | --- | --- |
 | rules | string \| [AllPossibleCheckers](#AllPossibleCheckers)[] \| [AllPossibleCheckers](#AllPossibleCheckers) \| [DoRuleType](#DoRuleType) |  |
 
 
-## Functions
+### Functions
 
-`doCreateRole`
+1. Role:
 
-| Type | Description |
-| --- | --- |
-| string |  |
+- **doCreateRole**(*name: string*): *[DoRoleType](#DoRoleType)*
 
-`doCreateRuleSet`
+2. Rule: 
 
-| Type | Description |
-| --- | --- |
-| [RuleSet](#RuleSet) |  |
+- **doCreateRuleSet**(*ruleSet: [DoRuleSet](#DoRuleSet), options?: [DoRuleOptions](#DoRuleOptions)*): *[DoStringDictionary](#DoStringDictionary)\<[DoRule](#DoRule)\>*
 
-`doCreateRule`
+- <a id="doCreateRule"></a>**doCreateRule**(*name: string, checkers: [AllPossibleCheckers](#AllPossibleCheckers)[], options?:[DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
 
-| Type | Description |
-| --- | --- |
-| string |  |
-| [AllPossibleCheckers](#AllPossibleCheckers)[] |  |
-| Optional\<[DoRuleOptions](#DoRuleOptions)> |  |
+- **doExtendRule**(*name: string,  checkers: [AllPossibleCheckers](#AllPossibleCheckers)[]*): *[DoStringDictionary](#DoStringDictionary)\<[DoRule](#DoRule)\>*
 
-`doNot`
+- **doSimpleRule**(*name: string, options?:[DoRuleOptions](#DoRuleOptions)*): *{ [name]: [doCreateRule](#doCreateRule)(name, [() => true], options) }*
 
-| Type | Description |
-| --- | --- |
-| [AllPossibleCheckers](#AllPossibleCheckers) |  |
-| Optional\<[DoRuleOptions](#DoRuleOptions)> |  |
-| Optional\<string> |  |
+3. Logical
 
+- **doNot**(*checkers: [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
 
+- **doOr**(*checkers: [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
 
+- **doAnd**(*checkers:  [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
+
+## Explanations
 ----
-### <a id="DoStringDictionary"></a>DoStringDictionary
-
-
-### <a id="DoRuleType"></a>DoRuleType 
-
-
 ### <a id="AllPossibleCheckers"></a>AllPossibleCheckers
 
 
-### <a id="RuleSet"></a>RuleSet
+### <a id="DoRuleSet"></a>DoRuleSet
 ```ts
 {
-    [roleName: string]: [AllPossibleCheckers](#AllPossibleCheckers)[]
+    [ruleName: string]: AllPossibleCheckers[]
 }
 ```
 
@@ -186,7 +209,7 @@ DoCanGuard
 
 ### <a id="Dependency"></a>Dependency
 ```ts
-export type Dependency = [DoRoleType[], DoStringDictionary<DoRuleType>];
+[DoRoleType[], DoStringDictionary<DoRuleType>]
 ```
 
 ### <a id="DoRuleType"></a>DoRuleType

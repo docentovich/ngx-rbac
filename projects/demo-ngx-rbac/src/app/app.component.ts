@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
-  doCreatRole,
-  doCreatRuleSet,
+  doCreateRole,
+  doCreateRuleSet,
   DoGlobalRulesService,
   doNot,
   DoRoleType,
 } from '@do/ngx-rbac';
 
-export const guest: DoRoleType = doCreatRole('GUEST');
-export const moderator: DoRoleType = doCreatRole('MODERATOR');
+export const guest: DoRoleType = doCreateRole('GUEST');
+export const moderator: DoRoleType = doCreateRole('MODERATOR');
 moderator.addPermissionsOf(guest);
-export const admin: DoRoleType = doCreatRole('ADMIN');
+export const admin: DoRoleType = doCreateRole('ADMIN');
 admin.addPermissionsOf(moderator);
 
-export const rules = doCreatRuleSet({
+export const rules = doCreateRuleSet({
   GUARD_RULE: [admin],
   GUEST_and_ADMIN: [guest],
   IS_MODERATOR: [moderator],

@@ -51,6 +51,6 @@ export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType 
   }
 }
 
-export function doCreatRole(name: string): DoRoleType {
+export function doCreateRole(name: string): DoRoleType {
   return new DoRole(name);
 }
