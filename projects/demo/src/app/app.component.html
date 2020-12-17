@@ -1,0 +1,9 @@
+<div class="nav-bar">
+  <a [routerLink]="['list']">User List</a>
+  <a [routerLink]="['login']">Login</a>
+  <a [routerLink]="['profile', userId$ | async]">My profile</a>
+  <button class="app-button negative" type="button" (click)="onLogout()">Logout</button>
+</div>
+<div class="app">
+  <router-outlet></router-outlet>
+</div>
