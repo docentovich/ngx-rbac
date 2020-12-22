@@ -24,7 +24,7 @@ $ npm install ? --save
 
 ```ts
 // All roles that should be in use in the App
-export const enum roles {
+export enum roles {
   unauthorized = '[ROLES] UNAUTHORIZED',
   authorized = '[ROLES] AUTHORIZED',
   moderator = '[ROLES] MODERATOR'
@@ -45,7 +45,7 @@ moderatorRole.addPermissionsOf(authorizedRole);
 ## <a id="setupRules"></a>Setup Rules
 
 ```ts
-import { roles } form './roles.ts'
+import { roles } from './roles.ts'
 
 // The rules, that will be used in the App
 export const enum rules {

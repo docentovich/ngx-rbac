@@ -1,10 +1,10 @@
-import { selectAllUsers } from './../../store/app.selectors';
-import { appActions } from './../../store/app.actions';
-import { AppState } from './../../store/app.reducer';
-import { User, Status } from './../../models/user';
-import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { User } from './../../models/user';
+import { appActions } from './../../store/app.actions';
+import { AppState } from './../../store/app.reducer';
+import { selectAllUsers } from './../../store/app.selectors';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +15,6 @@ export class ListComponent {
   public userList$: Observable<User[]> = this.store.pipe(
     select(selectAllUsers)
   );
-  public status = Status;
 
   constructor(private readonly store: Store<AppState>) {}
 

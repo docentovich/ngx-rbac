@@ -1,7 +1,7 @@
 
 import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
 import { Action, createReducer, on } from '@ngrx/store';
-import { Status, User } from './../models/user';
+import { User } from './../models/user';
 import { appActions } from './app.actions';
 
 
@@ -59,10 +59,13 @@ const userReducer = createReducer(
     return adapter.upsertOne(payload, state);
   }),
   on(appActions.deleteUser, (state, { payload }) => {
-    return adapter.updateOne({ id: payload, changes: { status: Status.deleted }}, state);
+    return adapter.updateOne({ id: payload, changes: { deleted: true }}, state);
   }),
   on(appActions.restoreUser, (state, { payload }) => {
-    return adapter.updateOne({ id: payload, changes: { status: Status.authorized }}, state);
+    return adapter.updateOne(
+      { id: payload, changes: { deleted: false } },
+      state
+    );
   }),
   on(appActions.login, (state, { payload }) => {
     return {...state, currentUserId: payload }

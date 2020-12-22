@@ -11,13 +11,21 @@
     </tr>
     <tr>
       <td>
-        <label for="status">Status:</label>
+        <label for="roles">Roles:</label>
       </td>
       <td>
-        <select name="status" formControlName="status">
-          <option [value]="status.authorized">Authorized</option>
-          <option [value]="status.deleted">Deleted</option>
+        <select multiple name="roles" formControlName="roles" size="2">
+          <option [value]="roles.authorized">Common User</option>
+          <option [value]="roles.moderator">Moderator</option>
         </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="deleted">Deleted:</label>
+      </td>
+      <td>
+        <input type="checkbox" name="deleted" formControlName="deleted">
       </td>
     </tr>
   </table>

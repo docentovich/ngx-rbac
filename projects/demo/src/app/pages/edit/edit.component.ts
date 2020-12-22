@@ -1,9 +1,10 @@
+import { Roles } from './../../rbac/roles';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Status } from './../../models/user';
 import { appActions } from './../../store/app.actions';
 import { AppState } from './../../store/app.reducer';
 import { selectUserEntities } from './../../store/app.selectors';
@@ -15,7 +16,7 @@ import { selectUserEntities } from './../../store/app.selectors';
 })
 export class EditComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;
-  public status = Status;
+  public roles: typeof Roles = Roles
   public userId: string;
 
   private subscriptions: Subscription = new Subscription();
@@ -37,7 +38,8 @@ export class EditComponent implements OnInit, OnDestroy {
           if (user) {
             this.formGroup = new FormGroup({
               name: new FormControl(user.name, Validators.required),
-              status: new FormControl(user.status),
+              deleted: new FormControl(user.deleted),
+              roles: new FormControl([...user.roles], Validators.required),
             });
           }
         })
@@ -45,7 +47,8 @@ export class EditComponent implements OnInit, OnDestroy {
     } else {
       this.formGroup = new FormGroup({
         name: new FormControl('', Validators.required),
-        status: new FormControl(this.status.authorized),
+        deleted: new FormControl(false),
+        roles: new FormControl(this.roles.authorized, Validators.required),
       });
     }
   }
@@ -62,7 +65,8 @@ export class EditComponent implements OnInit, OnDestroy {
           payload: {
             id: this.userId,
             name: this.formGroup.get('name').value,
-            status: this.formGroup.get('status').value,
+            deleted: this.formGroup.get('deleted').value,
+            roles: this.formGroup.get('roles').value,
           },
         })
       );
@@ -72,7 +76,8 @@ export class EditComponent implements OnInit, OnDestroy {
           payload: {
             id: `${Math.random()}`,
             name: this.formGroup.get('name').value,
-            status: this.formGroup.get('status').value,
+            deleted: this.formGroup.get('deleted').value,
+            roles: this.formGroup.get('roles').value,
           },
         })
       );

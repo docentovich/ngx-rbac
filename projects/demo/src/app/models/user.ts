@@ -1,10 +1,8 @@
-export enum Status {
-  authorized = 'Authorized',
-  deleted = 'Deleted',
-}
+import { Roles } from './../rbac/roles';
 
 export interface User {
   id: string;
   name: string;
-  status: Status;
+  deleted: boolean;
+  roles: Roles[];
 }

@@ -1,11 +1,11 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { selectUserEntities } from './../../store/app.selectors';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { User } from './../../models/user';
 import { appActions } from './../../store/app.actions';
 import { AppState } from './../../store/app.reducer';
-import { User, Status } from './../../models/user';
-import { Observable, Subscription } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { selectUserEntities } from './../../store/app.selectors';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +15,6 @@ import { Store } from '@ngrx/store';
 export class ProfileComponent implements OnInit, OnDestroy {
   public userId: string;
   public user: User;
-  public status = Status;
 
   private subscriptions: Subscription = new Subscription();
   constructor(
