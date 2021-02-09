@@ -1,3 +1,4 @@
+import { DoNgxRbacModule } from '@do/ngx-rbac';
 import { Route, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -57,6 +58,7 @@ const routes: Route[] = [
         persist: true,
       },
     }),
+    DoNgxRbacModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,3 +1,5 @@
+import { moderatorRole } from './../../rbac/roles';
+import { DoGlobalRulesService } from '@do/ngx-rbac';
 import { appActions } from './../../store/app.actions';
 import { selectAllUsers } from './../../store/app.selectors';
 import { AppState } from './../../store/app.reducer';
@@ -16,13 +18,14 @@ export class LoginComponent {
     select(selectAllUsers)
   );
 
-  constructor(private readonly store: Store<AppState>) {}
+  constructor(
+    private readonly store: Store<AppState>,
+    private readonly doGlobalRulesService: DoGlobalRulesService
+  ) {}
 
-  public loginAsUser(userId: string): void {
+  public login(userId: string): void {
     this.store.dispatch(appActions.login({ payload: userId }));
-  }
-
-  public loginAsModerator(): void {
-    // this.store.dispatch(appActions.login({ payload: userId }));
+    console.log(this.doGlobalRulesService.changeRoles);
+    this.doGlobalRulesService.changeRoles([moderatorRole]);
   }
 }

@@ -32,17 +32,14 @@ const {
 
 
 export const selectUserIds = (state) => {
-  console.log('selectUserIds', state)
   return selectIds(state);
 }
 
 export const selectUserEntities = (state) => {
-  console.log('selectUserEntities', state)
   return selectEntities(state);
 };
 
 export const selectAllUsers = (state) => {
-  console.log('selectAllUsers', state)
   return selectAll(state);
 };
 

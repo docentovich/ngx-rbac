@@ -14,9 +14,10 @@
         <label for="roles">Roles:</label>
       </td>
       <td>
-        <select multiple name="roles" formControlName="roles" size="2">
-          <option [value]="roles.authorized">Common User</option>
-          <option [value]="roles.moderator">Moderator</option>
+        <select multiple name="roles" formControlName="roles" size="3">
+          <option [value]="authorized">Common User</option>
+          <option [value]="moderator">Moderator</option>
+          <option [value]="restoratorRole">Restorator</option>
         </select>
       </td>
     </tr>

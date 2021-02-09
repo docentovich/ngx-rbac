@@ -1,9 +1,15 @@
-<div class="nav-bar">
-  <a [routerLink]="['list']">User List</a>
-  <a [routerLink]="['login']">Login</a>
-  <a [routerLink]="['profile', userId$ | async]">My profile</a>
-  <button class="app-button negative" type="button" (click)="onLogout()">Logout</button>
-</div>
-<div class="app">
-  <router-outlet></router-outlet>
-</div>
+ <!-- [roles]="userRoles$ | async" -->
+<do-provide-rules>
+  <div class="nav-bar">
+    <a class="app-button positive" *ngIf="appPermissions.canSeeUserList | doCan"  [routerLink]="['list']">User List</a>
+    <a class="app-button positive" [routerLink]="['login']">Login</a>
+    <a class="app-button positive" *ngIf="userId$ | async as userId" [routerLink]="['profile', userId]">My profile</a>
+    <button class="app-button negative" type="button" (click)="onLogout()">Logout</button>
+  </div>
+  <div class="app">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="debug">
+    <do-debug></do-debug>
+  </div>
+</do-provide-rules>

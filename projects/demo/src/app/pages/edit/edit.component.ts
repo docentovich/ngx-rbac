@@ -1,4 +1,5 @@
-import { Roles } from './../../rbac/roles';
+import { DoRoleType } from './../../../../../ngx-rbac/src/lib/type/do-role-type';
+import { Roles, authorizedRole, moderatorRole, restoratorRole } from './../../rbac/roles';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -16,16 +17,16 @@ import { selectUserEntities } from './../../store/app.selectors';
 })
 export class EditComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;
-  public roles: typeof Roles = Roles
+  public roles: typeof Roles = Roles;
   public userId: string;
-
+  public authorized: DoRoleType = authorizedRole;
+  public moderator: DoRoleType = moderatorRole;
+  public restoratorRole: DoRoleType = restoratorRole;
   private subscriptions: Subscription = new Subscription();
   constructor(
     private readonly store: Store<AppState>,
     private readonly ar: ActivatedRoute
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
     this.userId = this.ar.snapshot.params.userId;
@@ -74,7 +75,7 @@ export class EditComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         appActions.addUser({
           payload: {
-            id: `${Math.random()}`,
+            id: `${Math.floor(Math.random() * 10000)}`,
             name: this.formGroup.get('name').value,
             deleted: this.formGroup.get('deleted').value,
             roles: this.formGroup.get('roles').value,

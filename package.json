@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4201",
+    "start-demo": "ng serve demo",
     "install-nested": "npm install --scripts-prepend-node-path=auto",
     "build": "ng build",
     "build-lib": "ng build ngx-rbac --prod",
@@ -33,6 +34,7 @@
     "@angular/compiler-cli": "~9.0.6",
     "@angular/language-service": "~9.0.6",
     "@compodoc/compodoc": "^1.1.11",
+    "@ngrx/effects": "^10.1.2",
     "@ngrx/entity": "^10.1.1",
     "@ngrx/store": "^10.1.1",
     "@ngrx/store-devtools": "^10.1.1",

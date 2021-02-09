@@ -40,3 +40,8 @@ export const selectCurrentUser = createSelector(
   selectCurrentUserId,
   (userEntities, userId) => userEntities[userId]
 );
+
+export const selectCurrentUserRoles = createSelector(
+  selectCurrentUser,
+  (user) => user?.roles
+);

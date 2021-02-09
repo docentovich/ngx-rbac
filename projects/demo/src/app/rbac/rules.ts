@@ -13,8 +13,14 @@ export const enum rules {
 export const ruleSet = doCreateRuleSet({
   [rules.isUnauthorized]: [
     doNot(Roles.authorized),
-    doNot(Roles.moderator)
-],                                                                  // The Rule only for users with unauthorized Role
-  [rules.isAuthorized]: [Roles.authorized, doNot(Roles.moderator)], // The Rule only for users with authorized Role
-  [rules.isModerator]: [Roles.moderator]                            // The Rule only for users with moderator Role
+    doNot(Roles.moderator),
+    doNot(Roles.restorator)
+],                                            // The Rule only for users with unauthorized Role
+  [rules.isAuthorized]: [
+    Roles.authorized,
+    doNot(Roles.moderator),
+    doNot(Roles.restorator)
+  ],                                          // The Rule only for users with authorized Role
+  [rules.isModerator]: [Roles.moderator],     // The Rule only for users with moderator Role
+  [rules.isModerator]: [Roles.restorator]     // The Rule only for users with moderator Role
 })
