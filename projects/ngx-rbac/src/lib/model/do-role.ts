@@ -13,6 +13,7 @@ export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType 
   get can(): DoStringDictionary<DoRuleType> {
     return this._childes.reduce(
       (acc: DoStringDictionary<DoRuleType>, children) => ({
+        ...acc,
         ...this._canSelf,
         ...children.can,
         ...this._assignedRules
@@ -23,6 +24,7 @@ export class DoRole extends DoRolePermission implements DoRoleType, DoDebugType 
   get canNames(): string[] {
     return this._childes.reduce(
       (acc: string[], children) => [
+        ...acc,
         ...this._canNamesSelf,
         ...children.canNames,
       ],
