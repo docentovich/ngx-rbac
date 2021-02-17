@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HelloComponent } from './hello.component';
-import { doCreateRule, doCreateRuleSet, doNot, DoAbsentRuleBehavior } from '@do/ngx-rbac';
+import { doCreateRule, doCreateRuleSet, doNot, DoAbsentRuleBehavior } from '@doce/ngx-rbac';
 
 @Component({
   selector: 'app-deep',

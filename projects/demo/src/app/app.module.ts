@@ -1,4 +1,4 @@
-import { DoNgxRbacModule } from '@do/ngx-rbac';
+import { DoNgxRbacModule } from '@doce/ngx-rbac';
 import { Route, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';

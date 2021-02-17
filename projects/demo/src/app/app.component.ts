@@ -11,7 +11,7 @@ import { AppState } from './store/app.reducer';
 import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { DoGlobalRulesService } from '@do/ngx-rbac';
+import { DoGlobalRulesService } from '@doce/ngx-rbac';
 import { tap } from 'rxjs/operators';
 
 @Component({

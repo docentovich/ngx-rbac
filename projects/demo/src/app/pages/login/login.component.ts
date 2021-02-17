@@ -1,5 +1,5 @@
 import { moderatorRole } from './../../rbac/roles';
-import { DoGlobalRulesService } from '@do/ngx-rbac';
+import { DoGlobalRulesService } from '@doce/ngx-rbac';
 import { appActions } from './../../store/app.actions';
 import { selectAllUsers } from './../../store/app.selectors';
 import { AppState } from './../../store/app.reducer';

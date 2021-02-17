@@ -1,4 +1,4 @@
-import { doCreatePermission } from "@do/ngx-rbac";
+import { doCreatePermission } from "@doce/ngx-rbac";
 
 export enum AppPermissions {
   canEditSelf = '[PERMISSIONS] CAN EDIT SELF',

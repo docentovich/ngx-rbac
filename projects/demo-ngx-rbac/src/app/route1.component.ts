@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Optional, SkipSelf } from '@angular/core';
-import { DoProvideRulesComponent } from '@do/ngx-rbac';
+import { DoProvideRulesComponent } from '@doce/ngx-rbac';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 

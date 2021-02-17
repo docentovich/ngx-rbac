@@ -17,7 +17,7 @@ Roles and rules based access control library for angular version 1.
 To install this library, run:
 
 ```bash
-$ npm install @do/ngx-rbac --save 
+$ npm install @doce/ngx-rbac --save 
 ```
 
 ## <a id="initializeRole"></a>Initialize Roles

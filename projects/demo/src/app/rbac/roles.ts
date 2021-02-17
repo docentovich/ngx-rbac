@@ -1,4 +1,4 @@
-import { doCreateRole, DoRoleType } from '@do/ngx-rbac';
+import { doCreateRole, DoRoleType } from '@doce/ngx-rbac';
 import {
   canEditSelfPermission,
 canSeeUserListPermission,

@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HelloComponent } from './hello.component';
-import { DoNgxRbacModule } from '@do/ngx-rbac';
+import { DoNgxRbacModule } from '@doce/ngx-rbac';
 import { Route1Component } from './route1.component';
 import { Route2Component } from './route2.component';
 import { Route3Component } from './route3.component';

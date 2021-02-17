@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HelloComponent } from './hello.component';
 import { Route1Component } from './route1.component';
-import { DoCanGuard } from '@do/ngx-rbac';
+import { DoCanGuard } from '@doce/ngx-rbac';
 import { Route3Component } from './route3.component';
 import { Route4Component } from './route4.component';
 

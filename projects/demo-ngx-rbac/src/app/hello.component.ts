@@ -11,7 +11,7 @@ import {
   doCreateRuleSet,
   DoGlobalRulesService,
   DoProvideRulesComponent
-} from '@do/ngx-rbac';
+} from '@doce/ngx-rbac';
 import { admin, guest } from './app.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

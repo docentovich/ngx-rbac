@@ -1,5 +1,5 @@
 {
-  "name": "@do/ngx-rbac",
+  "name": "@doce/ngx-rbac",
   "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": "^9.0.7",
