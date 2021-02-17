@@ -106,6 +106,17 @@ export function doCreateRuleSet<
   );
 }
 
+export function doCreateSimpleRuleSet(ruleNames: string[], options?: DoRuleOptions):
+  DoStringDictionary<DoRule> {
+  return ruleNames.reduce(
+    (acc, name) => ({
+      ...acc,
+      ...doSimpleRule(name, options),
+    }),
+    {} as DoStringDictionary<DoRule>
+  );
+}
+
 export function doExtendRule(
   name: string,
   args: AllPossibleCheckers[]
