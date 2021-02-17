@@ -1,24 +1,239 @@
 # NgxRbac
+----
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.7.
+Roles and rules based access control library for angular version 1.
 
-## Code scaffolding
+* [Installation](#installation)
+* [Initialize Roles](#initializeRole)
+* [Setup Rules](#setupRules)
+* [Setup Routing](#setupRouting)
+* [Check the access](#checkTheAccess)
+* [Tools](#tools)
+* [Explanations](#explanations)
 
-Run `ng generate component component-name --project ngx-rbac` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-rbac`.
-> Note: Don't forget to add `--project ngx-rbac` or else it will be added to the default project in your `angular.json` file. 
 
-## Build
+## Installation
 
-Run `ng build ngx-rbac` to build the project. The build artifacts will be stored in the `dist/` directory.
+To install this library, run:
 
-## Publishing
+```bash
+$ npm install @do/ngx-rbac --save 
+```
 
-After building your library with `ng build ngx-rbac`, go to the dist folder `cd dist/ngx-rbac` and run `npm publish`.
+## <a id="initializeRole"></a>Initialize Roles
 
-## Running unit tests
+```ts
+// All roles that should be in use in the App
+export enum roles {
+  unauthorized = '[ROLES] UNAUTHORIZED',
+  authorized = '[ROLES] AUTHORIZED',
+  moderator = '[ROLES] MODERATOR'
+}
 
-Run `ng test ngx-rbac` to execute the unit tests via [Karma](https://karma-runner.github.io).
+// Initialize base role for an unauthorized user  
+export const unauthorizedRole: DoRoleType = doCreateRole(roles.unauthorized);
+// Initialize common role for authorized 
+export const authorizedRole: DoRoleType = doCreateRole(roles.authorized);
+// Add all permissions that have a user with the unauthorized user role to the authorized
+authorizedRole.addPermissionsOf(unauthorizedRole);
+// Initialize the most privileged role for the moderator  
+export const moderatorRole: DoRoleType = doCreateRole(roles.moderator);
+// Add all permissions that have a user with the authorized user role to the moderator
+moderatorRole.addPermissionsOf(authorizedRole);
+```
 
-## Further help
+## <a id="setupRules"></a>Setup Rules
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```ts
+import { roles } from './roles.ts'
+
+// The rules, that will be used in the App
+export const enum rules {
+  isUnauthorized = '[RULES] IS_UNAUTHORIZED', // check is user is unauthorized 
+  isAuthorized = '[RULES] IS_AUTHORIZED',     // check is user is authorized
+  isModerator = '[RULES] IS_MODERATOR',       // check is user is moderator
+}
+
+// Define the conditions by the witch the rules will be checks   
+export const ruleSet = doCreateRuleSet({
+  [rules.isUnauthorized]: [
+    roles.unauthorized, 
+    doNot(roles.authorized), 
+    doNot(roles.moderator)
+],                                       // The Rule only for users with unauthorized Role
+  [rules.isAuthorized]: [roles.authorized, doNot(roles.moderator)], // The Rule only for users with authorized Role
+  [rules.isModerator]: [roles.moderator] // The Rule only for users with moderator Role
+})
+```
+
+```ts
+import { DoGlobalRulesService } from '?'
+import { ruleSet } from './ruleSet.ts'
+
+export class AppComponent {
+  constructor(private readonly doGlobalRulesService: DoGlobalRulesService) {
+    doGlobalRulesService.addGlobalRules(ruleSet); // Add global Rules to the pull of global rules  
+  }
+}
+```
+
+## <a id="setupRouting"></a>Setup Routing
+
+```ts
+const routes: Routes = [
+  {
+    path: '',
+    component: AppComponent
+    children: [
+      {
+        path: 'singUpPath',
+        data: {
+          rules: [rules.isUnauthorized]
+        },
+        canActivate: [DoCanGuard],
+        component: SingUpComponent
+      },
+      {
+        path: 'singInPath',
+         data: {
+          rules: [rules.isUnauthorized]
+        },
+        canActivate: [DoCanGuard],
+        component: SingInComponent
+      },
+      {
+        path: 'userHomePagePath/:userId',
+         data: {
+          rules: [rules.isAuthorized]
+        },
+        canActivate: [DoCanGuard],
+        component: UserHomePageComponent
+      },
+      {
+        path: 'CMSPagePath',
+         data: {
+          rules: [rules.isModerator]
+        },
+        canActivate: [DoCanGuard],
+        component: CMSPageComponent
+      }
+    ]
+  }
+]
+```
+
+## <a id="checkTheAccess"></a>Check the access
+
+
+```html
+<user-card>
+  <h2>{{user.name}}</h2>
+  <a href="" [doCan]="CAN_EDIT">Edit</a>
+</user-card>
+```
+
+## Tools
+### Component
+
+```html 
+<do-provide-rules></do-provide-rules>
+```
+
+| Properties | Type | Description |
+| --- | --- | --- |
+| rules | [DoStringDictionary](#DoStringDictionary)\<[DoRuleType](#DoRuleType)> \| [DoRuleType](#DoRuleType) |  |
+| roles | [DoRuleType](#DoRuleType)[] |  |
+
+### Guard
+
+```ts
+DoCanGuard
+```
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| rules | string[] |  |
+
+
+### Pipe
+
+`doCan`
+
+| Arguments | Type | Description |
+| --- | --- | --- |
+| rules | string \| [AllPossibleCheckers](#AllPossibleCheckers)[] \| [AllPossibleCheckers](#AllPossibleCheckers) \| [DoRuleType](#DoRuleType) |  |
+
+
+### Functions
+
+1. Role:
+
+- **doCreateRole**(*name: string*): *[DoRoleType](#DoRoleType)*
+
+2. Rule: 
+
+- **doCreateRuleSet**(*ruleSet: [DoRuleSet](#DoRuleSet), options?: [DoRuleOptions](#DoRuleOptions)*): *[DoStringDictionary](#DoStringDictionary)\<[DoRule](#DoRule)\>*
+
+- <a id="doCreateRule"></a>**doCreateRule**(*name: string, checkers: [AllPossibleCheckers](#AllPossibleCheckers)[], options?:[DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
+
+- **doExtendRule**(*name: string,  checkers: [AllPossibleCheckers](#AllPossibleCheckers)[]*): *[DoStringDictionary](#DoStringDictionary)\<[DoRule](#DoRule)\>*
+
+- **doSimpleRule**(*name: string, options?:[DoRuleOptions](#DoRuleOptions)*): *{ [name]: [doCreateRule](#doCreateRule)(name, [() => true], options) }*
+
+3. Logical
+
+- **doNot**(*checkers: [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
+
+- **doOr**(*checkers: [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
+
+- **doAnd**(*checkers:  [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
+
+## Explanations
+----
+### <a id="AllPossibleCheckers"></a>AllPossibleCheckers
+
+
+### <a id="DoRuleSet"></a>DoRuleSet
+```ts
+{
+    [ruleName: string]: AllPossibleCheckers[]
+}
+```
+
+### <a id="DoRuleOptions"></a>DoRuleOptions
+
+### <a id="DoCheckerFunction"></a>DoCheckerFunction
+```ts
+(args: any[], dependency: Dependency) => boolean
+```
+
+### <a id="Dependency"></a>Dependency
+```ts
+[DoRoleType[], DoStringDictionary<DoRuleType>]
+```
+
+### <a id="DoRuleType"></a>DoRuleType
+```ts
+{
+    addPermissionsOf(child: DoRolePermissionType): void;
+    addRule(rule: DoRuleType | DoStringDictionary<DoRuleType>): void;
+}
+```
+
+
+### <a id="DoStringDictionary"></a>DoStringDictionary\<T>
+```ts
+{
+    [key: string]: T;
+}
+```
+
+### <a id="DoRolePermissionType"></a>DoRolePermissionType
+```ts
+{
+    can: DoStringDictionary<DoRuleType>;
+    canNames: string[];
+    name: string;
+}
+```
+
