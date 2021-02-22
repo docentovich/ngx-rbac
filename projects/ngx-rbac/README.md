@@ -3,11 +3,11 @@
 
 Roles and rules based access control library for angular version 1.
 
-* [Installation](#installation)
-* [Initialize Roles](#initializeRole)
+<!-- * [Initialize Roles](#initializeRole)
 * [Setup Rules](#setupRules)
 * [Setup Routing](#setupRouting)
-* [Check the access](#checkTheAccess)
+* [Check the access](#checkTheAccess) -->
+* [Installation](#installation)
 * [Tools](#tools)
 * [Explanations](#explanations)
 
@@ -20,7 +20,8 @@ To install this library, run:
 $ npm install @doce/ngx-rbac --save 
 ```
 
-## <a id="initializeRole"></a>Initialize Roles
+ <!--
+ ## <a id="initializeRole"></a>Initialize Roles
 
 ```ts
 // All roles that should be in use in the App
@@ -131,6 +132,7 @@ const routes: Routes = [
   <a href="" [doCan]="CAN_EDIT">Edit</a>
 </user-card>
 ```
+-->
 
 ## Tools
 ### Component
@@ -141,8 +143,8 @@ const routes: Routes = [
 
 | Properties | Type | Description |
 | --- | --- | --- |
-| rules | [DoStringDictionary](#DoStringDictionary)\<[DoRuleType](#DoRuleType)> \| [DoRuleType](#DoRuleType) |  |
-| roles | [DoRuleType](#DoRuleType)[] |  |
+| rules | [DoStringDictionary](#DoStringDictionary)\<[DoRuleType](#DoRuleType)> \| [DoRuleType](#DoRuleType) | *Input a rules here to provide them on the current level* |
+| roles | [DoRuleType](#DoRuleType)[] | *Input a roles here to provide them on the current level* |
 
 ### Guard
 
@@ -152,7 +154,7 @@ DoCanGuard
 
 | Arguments | Type | Description |
 | --- | --- | --- |
-| rules | string[] |  |
+| rules | string[] | *The array of rule names* |
 
 
 ### Pipe
@@ -161,16 +163,20 @@ DoCanGuard
 
 | Arguments | Type | Description |
 | --- | --- | --- |
-| rules | string \| [AllPossibleCheckers](#AllPossibleCheckers)[] \| [AllPossibleCheckers](#AllPossibleCheckers) \| [DoRuleType](#DoRuleType) |  |
+| rules | string \| [AllPossibleCheckers](#AllPossibleCheckers)[] \| [AllPossibleCheckers](#AllPossibleCheckers) \| [DoRuleType](#DoRuleType) | *Test criteria* |
 
 
 ### Functions
 
-1. Role:
+#### For Roles:
 
 - **doCreateRole**(*name: string*): *[DoRoleType](#DoRoleType)*
 
-2. Rule: 
+#### For Permissions:
+
+- **doCreatePermission**(*name: string*): *[DoRolePermissionType](#DoRolePermissionType)*
+- **doCreatePermissions**(*names: string[]*): *[DoRolePermissionType](#DoRolePermissionType)[]*
+#### For Rules: 
 
 - **doCreateRuleSet**(*ruleSet: [DoRuleSet](#DoRuleSet), options?: [DoRuleOptions](#DoRuleOptions)*): *[DoStringDictionary](#DoStringDictionary)\<[DoRule](#DoRule)\>*
 
@@ -180,7 +186,7 @@ DoCanGuard
 
 - **doSimpleRule**(*name: string, options?:[DoRuleOptions](#DoRuleOptions)*): *{ [name]: [doCreateRule](#doCreateRule)(name, [() => true], options) }*
 
-3. Logical
+#### Logical:
 
 - **doNot**(*checkers: [AllPossibleCheckers](#AllPossibleCheckers), options: [DoRuleOptions](#DoRuleOptions)*): *[DoRuleType](#DoRuleType)*
 
@@ -191,7 +197,9 @@ DoCanGuard
 ## Explanations
 ----
 ### <a id="AllPossibleCheckers"></a>AllPossibleCheckers
-
+```ts
+DoRuleType | DoRoleType | DoCheckerFunction | string;
+```
 
 ### <a id="DoRuleSet"></a>DoRuleSet
 ```ts
@@ -201,6 +209,12 @@ DoCanGuard
 ```
 
 ### <a id="DoRuleOptions"></a>DoRuleOptions
+```ts
+{
+  absentRuleBehavior?: DoAbsentRuleBehavior;
+  groupName?: string;
+}
+```
 
 ### <a id="DoCheckerFunction"></a>DoCheckerFunction
 ```ts
