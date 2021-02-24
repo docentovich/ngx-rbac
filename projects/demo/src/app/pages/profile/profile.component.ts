@@ -1,3 +1,4 @@
+import { AppPermissions } from './../../rbac/permissions';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -15,6 +16,7 @@ import { selectUserEntities } from './../../store/app.selectors';
 export class ProfileComponent implements OnInit, OnDestroy {
   public userId: string;
   public user: User;
+  public appPermissions: typeof AppPermissions = AppPermissions
 
   private subscriptions: Subscription = new Subscription();
   constructor(
@@ -24,7 +26,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userId = this.ar.snapshot.params.userId;
-    console.log('this.userId', this.userId);
     if (this.userId) {
       this.subscriptions.add(
         this.store.select(selectUserEntities).subscribe((users) => {

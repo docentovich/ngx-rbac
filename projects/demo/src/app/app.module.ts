@@ -1,3 +1,4 @@
+import { AppEffects } from './store/app.effects';
 import { DoNgxRbacModule } from '@doce/ngx-rbac';
 import { Route, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
@@ -12,6 +13,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { reducer } from './store/app.reducer';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Effect, EffectsModule } from '@ngrx/effects';
 
 const routes: Route[] = [
   {
@@ -48,6 +50,7 @@ const routes: Route[] = [
     BrowserModule,
     RouterModule.forRoot(routes),
     StoreModule.forRoot({ app: reducer }),
+    EffectsModule.forRoot([AppEffects]),
     ReactiveFormsModule,
     StoreDevtoolsModule.instrument({
       maxAge: 25,
@@ -58,7 +61,7 @@ const routes: Route[] = [
         persist: true,
       },
     }),
-    DoNgxRbacModule
+    DoNgxRbacModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
