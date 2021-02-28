@@ -4,7 +4,7 @@
     <a class="app-button positive" *ngIf="appPermissions.canSeeUserList | doCan"  [routerLink]="['list']">User List</a>
     <a class="app-button positive" [routerLink]="['login']">Login</a>
     <a class="app-button positive" *ngIf="userId$ | async as userId" [routerLink]="['profile', userId]">My profile</a>
-    <button class="app-button negative" type="button" (click)="onLogout()">Logout</button>
+    <button class="app-button negative" *ngIf="appPermissions.canLogout | doCan" type="button" (click)="onLogout()">Logout</button>
   </div>
   <div class="app">
     <router-outlet></router-outlet>

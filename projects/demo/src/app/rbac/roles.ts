@@ -1,12 +1,5 @@
 import { doCreateRole, DoRoleType } from '@doce/ngx-rbac';
-import {
-  canEditSelfPermission,
-canSeeUserListPermission,
-canEditOtherPermission,
-canDeletePermission,
-canSeeDeletedUserPermission,
-canRestorePermission,
-} from './permissions';
+import * as permissions from './permissions';
 
 export enum Roles {
   authorized = '[ROLES] AUTHORIZED',
@@ -16,16 +9,17 @@ export enum Roles {
 
 // Initialize common role for authorized
 export const authorizedRole: DoRoleType = doCreateRole(Roles.authorized);
-authorizedRole.addPermissionsOf(canEditSelfPermission);
-authorizedRole.addPermissionsOf(canSeeUserListPermission);
+authorizedRole.addPermissionsOf(permissions.canEditSelfPermission);
+authorizedRole.addPermissionsOf(permissions.canSeeUserListPermission);
+authorizedRole.addPermissionsOf(permissions.canLogout);
 // Initialize the most privileged role for the moderator
 export const moderatorRole: DoRoleType = doCreateRole(Roles.moderator);
 // Add all permissions that have a user with the authorized user role to the moderator
 moderatorRole.addPermissionsOf(authorizedRole);
-moderatorRole.addPermissionsOf(canEditOtherPermission);
-moderatorRole.addPermissionsOf(canDeletePermission);
+moderatorRole.addPermissionsOf(permissions.canEditOtherPermission);
+moderatorRole.addPermissionsOf(permissions.canDeletePermission);
 // Initialize the restorator role
 export const restoratorRole: DoRoleType = doCreateRole(Roles.restorator);
 restoratorRole.addPermissionsOf(authorizedRole);
-restoratorRole.addPermissionsOf(canSeeDeletedUserPermission);
-restoratorRole.addPermissionsOf(canRestorePermission);
+restoratorRole.addPermissionsOf(permissions.canSeeDeletedUserPermission);
+restoratorRole.addPermissionsOf(permissions.canRestorePermission);
