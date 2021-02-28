@@ -1,15 +1,20 @@
  <!-- [roles]="userRoles$ | async" -->
-<do-provide-rules>
-  <div class="nav-bar">
-    <a class="app-button positive" *ngIf="appPermissions.canSeeUserList | doCan"  [routerLink]="['list']">User List</a>
-    <a class="app-button positive" *ngIf="appRules.isUnauthorized | doCan" [routerLink]="['login']">Login</a>
-    <a class="app-button positive" *ngIf="userId$ | async as userId" [routerLink]="['profile', userId]">My profile</a>
-    <button class="app-button negative" *ngIf="appPermissions.canLogout | doCan" type="button" (click)="onLogout()">Logout</button>
+<do-provide-rules class="app" [class.debug-on]="debugOn">
+  <div class="hidden-debug">
+    <div class="debug">
+      <do-debug></do-debug>
+    </div>
   </div>
-  <div class="app">
-    <router-outlet></router-outlet>
-  </div>
-  <div class="debug">
-    <do-debug></do-debug>
+  <div class="body">
+    <div class="nav-bar">
+      <button type="button" [title]="debugOn ? 'Hide debug' : 'Show debug'" class="app-button transparent left-nav-btn" (click)="debugOn = !debugOn">{{ debugOn ? '&#10094;' : '&#10095;'}}</button>
+      <a class="app-button positive" *ngIf="appPermissions.canSeeUserList | doCan"  [routerLink]="['list']">User List</a>
+      <a class="app-button positive" *ngIf="appRules.isUnauthorized | doCan" [routerLink]="['login']">Login</a>
+      <a class="app-button positive" *ngIf="userId$ | async as userId" [routerLink]="['profile', userId]">My profile</a>
+      <button class="app-button negative" *ngIf="appPermissions.canLogout | doCan" type="button" (click)="onLogout()">Logout</button>
+    </div>
+    <div class="main">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </do-provide-rules>

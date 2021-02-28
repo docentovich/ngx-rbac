@@ -15,8 +15,8 @@ export class AppEffects {
       ofType(appActions.logout),
       tap(
         () => {
-          console.log('logout');
-          // this.doGlobalRulesService.changeRoles(null);
+          // console.log('logout');
+          this.doGlobalRulesService.changeRoles([]);
         }
       )
     ), {

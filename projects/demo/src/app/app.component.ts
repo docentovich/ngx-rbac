@@ -30,6 +30,7 @@ export class AppComponent {
   public canSeeUserListPermission = canSeeUserListPermission;
   public appPermissions: typeof AppPermissions = AppPermissions;
   public appRules: typeof AppRules = AppRules;
+  public debugOn: boolean = false;
 
   constructor(
     private readonly store: Store<AppState>,
