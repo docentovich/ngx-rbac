@@ -1,5 +1,5 @@
 import { DoRoleType } from './../../../../../ngx-rbac/src/lib/type/do-role-type';
-import { Roles, authorizedRole, moderatorRole, restoratorRole } from './../../rbac/roles';
+import { AppRoles, authorizedRole, moderatorRole, restoratorRole } from './../../rbac/roles';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -17,11 +17,11 @@ import { selectUserEntities } from './../../store/app.selectors';
 })
 export class EditComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;
-  public roles: typeof Roles = Roles;
   public userId: string;
   public authorized: DoRoleType = authorizedRole;
   public moderator: DoRoleType = moderatorRole;
   public restoratorRole: DoRoleType = restoratorRole;
+  private appRoles: typeof AppRoles = AppRoles;
   private subscriptions: Subscription = new Subscription();
   constructor(
     private readonly store: Store<AppState>,
@@ -49,7 +49,7 @@ export class EditComponent implements OnInit, OnDestroy {
       this.formGroup = new FormGroup({
         name: new FormControl('', Validators.required),
         deleted: new FormControl(false),
-        roles: new FormControl(this.roles.authorized, Validators.required),
+        roles: new FormControl(this.appRoles.authorized, Validators.required),
       });
     }
   }

@@ -6,7 +6,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Action } from "@ngrx/store";
 import { switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { Roles } from '../rbac/roles';
+import { AppRoles } from '../rbac/roles';
 
 @Injectable()
 export class AppEffects {

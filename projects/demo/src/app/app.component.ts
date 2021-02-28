@@ -1,7 +1,7 @@
 import { moderatorRole } from './rbac/roles';
 import { canSeeUserListPermission, AppPermissions } from './rbac/permissions';
 import { DoRoleType } from './../../../ngx-rbac/src/lib/type/do-role-type';
-import { ruleSet } from './rbac/rules';
+import { AppRules, ruleSet } from './rbac/rules';
 import { appActions } from './store/app.actions';
 import {
   selectCurrentUserId,
@@ -29,6 +29,7 @@ export class AppComponent {
   );
   public canSeeUserListPermission = canSeeUserListPermission;
   public appPermissions: typeof AppPermissions = AppPermissions;
+  public appRules: typeof AppRules = AppRules;
 
   constructor(
     private readonly store: Store<AppState>,
