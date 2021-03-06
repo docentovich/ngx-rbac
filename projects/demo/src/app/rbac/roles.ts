@@ -2,11 +2,15 @@ import { doCreateRole, DoRoleType } from '@doce/ngx-rbac';
 import * as permissions from './permissions';
 
 export enum AppRoles {
+  unauthorized = '[ROLES] UNAUTHORIZED',
   authorized = '[ROLES] AUTHORIZED',
   moderator = '[ROLES] MODERATOR',
   restorator = '[ROLES] RESTORATOR',
 }
 
+// Initialize role for unauthorized user
+export const unauthorizedRole: DoRoleType = doCreateRole(AppRoles.unauthorized);
+unauthorizedRole.addPermissionsOf(permissions.canLogin);
 // Initialize common role for authorized
 export const authorizedRole: DoRoleType = doCreateRole(AppRoles.authorized);
 authorizedRole.addPermissionsOf(permissions.canEditSelfPermission);

@@ -1,4 +1,4 @@
-import { moderatorRole } from './rbac/roles';
+import { moderatorRole, unauthorizedRole } from './rbac/roles';
 import { canSeeUserListPermission, AppPermissions } from './rbac/permissions';
 import { DoRoleType } from './../../../ngx-rbac/src/lib/type/do-role-type';
 import { AppRules, ruleSet } from './rbac/rules';
@@ -37,6 +37,8 @@ export class AppComponent {
     private readonly doGlobalRulesService: DoGlobalRulesService
   ) {
     this.doGlobalRulesService.addGlobalRules(ruleSet); // Add global Rules to the pull of global rules
+    this.doGlobalRulesService.changeRoles([unauthorizedRole]);
+    // create user with role moderator
     this.store.dispatch(
       appActions.addUser({
         payload: {

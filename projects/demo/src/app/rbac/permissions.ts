@@ -8,6 +8,7 @@ export enum AppPermissions {
   canSeeUserList = '[PERMISSIONS] CAN SEE USER LIST',
   canSeeDeletedUser = '[PERMISSIONS] CAN SEE DELETED USER',
   canLogout = '[PERMISSIONS] CAN LOGOUT',
+  canLogin = '[PERMISSIONS] CAN LOGIN',
 }
 
 export const canEditSelfPermission =  doCreatePermission(AppPermissions.canEditSelf);
@@ -17,3 +18,4 @@ export const canDeletePermission =  doCreatePermission(AppPermissions.canDelete)
 export const canSeeDeletedUserPermission = doCreatePermission(AppPermissions.canSeeDeletedUser)
 export const canRestorePermission =  doCreatePermission(AppPermissions.canRestore);
 export const canLogout = doCreatePermission(AppPermissions.canLogout);
+export const canLogin = doCreatePermission(AppPermissions.canLogin);
