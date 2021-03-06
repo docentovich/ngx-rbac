@@ -25,7 +25,6 @@ import { tap } from 'rxjs/operators';
 export class AppComponent {
   public userRoles$: Observable<DoRoleType[]> = this.store.pipe(
     select(selectCurrentUserRoles),
-    tap(console.log)
   );
   public userId$: Observable<string> = this.store.pipe(
     select(selectCurrentUserId)

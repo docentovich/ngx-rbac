@@ -23,6 +23,20 @@ export class AppEffects {
     }
   );
 
+  onLogin$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(appActions.login),
+      tap(
+        (action) => {
+          this.doGlobalRulesService.changeRoles([...action.payload.roles]);
+          this.router.navigate(['profile', action.payload.id]);
+        }
+      )
+    ), {
+      dispatch: false
+    }
+  );
+
   constructor(private readonly actions$: Actions, private readonly router: Router,
     private readonly doGlobalRulesService: DoGlobalRulesService) {}
 }

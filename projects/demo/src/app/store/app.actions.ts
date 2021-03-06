@@ -38,7 +38,7 @@ const restoreUser = createAction(
 const login = createAction(
   AppActions.login,
   props<{
-    payload: string
+    payload: User
   }>()
 );
 

@@ -65,7 +65,7 @@ const userReducer = createReducer(
     );
   }),
   on(appActions.login, (state, { payload }) => {
-    return {...state, currentUserId: payload }
+    return {...state, currentUserId: payload.id }
   }),
   on(appActions.logout, (state) => {
     return {...state, currentUserId: null }

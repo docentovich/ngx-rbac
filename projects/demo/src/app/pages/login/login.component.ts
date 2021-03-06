@@ -1,6 +1,3 @@
-// RBAC
-import { DoGlobalRulesService } from '@doce/ngx-rbac';
-
 // Store
 import { select, Store } from '@ngrx/store';
 import { appActions } from './../../store/app.actions';
@@ -22,12 +19,10 @@ export class LoginComponent {
   );
 
   constructor(
-    private readonly store: Store<AppState>,
-    private readonly doGlobalRulesService: DoGlobalRulesService
+    private readonly store: Store<AppState>
   ) {}
 
   public login(user: User): void {
-    this.store.dispatch(appActions.login({ payload: user.id }));
-    this.doGlobalRulesService.changeRoles([...user.roles]);
+    this.store.dispatch(appActions.login({ payload: user }));
   }
 }

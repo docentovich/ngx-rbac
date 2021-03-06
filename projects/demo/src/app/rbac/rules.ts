@@ -13,9 +13,7 @@ export enum AppRules {
 // Define the conditions by the witch the rules will be checks
 export const ruleSet = doCreateRuleSet({
   [AppRules.isUnauthorized]: [
-    doNot(AppRoles.authorized),
-    doNot(AppRoles.moderator),
-    doNot(AppRoles.restorator),
+    AppRoles.unauthorized,
   ], // The Rule only for users with unauthorized Role
   [AppRules.isAuthorized]: [
     AppRoles.authorized,

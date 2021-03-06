@@ -1,42 +1,65 @@
-import { AppEffects } from './store/app.effects';
-import { DoNgxRbacModule } from '@doce/ngx-rbac';
-import { Route, RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-import { AppComponent } from './app.component';
-import { LoginComponent } from './pages/login/login.component';
-import { ListComponent } from './pages/list/list.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { EditComponent } from './pages/edit/edit.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { Route, RouterModule } from '@angular/router';
+import { DoCanGuard, DoNgxRbacModule } from '@doce/ngx-rbac';
+import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AppComponent } from './app.component';
+import { EditComponent } from './pages/edit/edit.component';
+import { ListComponent } from './pages/list/list.component';
+import { LoginComponent } from './pages/login/login.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { AppRules, ruleSet } from './rbac/rules';
+import { AppEffects } from './store/app.effects';
 import { reducer } from './store/app.reducer';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Effect, EffectsModule } from '@ngrx/effects';
+
 
 const routes: Route[] = [
   {
     path: 'login',
     component: LoginComponent,
+    data: {
+      rules: [
+        ruleSet.isUnauthorized,
+      ],
+    },
+    canActivate: [DoCanGuard],
   },
   {
     path: 'list',
-    component: ListComponent
+    component: ListComponent,
+    data: {
+      rules: [ruleSet.isAuthorized, ruleSet.isModerator, ruleSet.isRestorator],
+    },
+    canActivate: [DoCanGuard],
   },
   {
     path: 'profile/:userId',
-    component: ProfileComponent
+    component: ProfileComponent,
+    data: {
+      rules: [ruleSet.isAuthorized, ruleSet.isModerator, ruleSet.isRestorator],
+    },
+    canActivate: [DoCanGuard],
   },
   {
     path: 'create',
-    component: EditComponent
+    component: EditComponent,
+    data: {
+      rules: [ruleSet.isModerator, ruleSet.isRestorator],
+    },
+    canActivate: [DoCanGuard],
   },
   {
     path: 'edit/:userId',
-    component: EditComponent
+    component: EditComponent,
+    data: {
+      rules: [ruleSet.isModerator, ruleSet.isRestorator],
+    },
+    canActivate: [DoCanGuard],
   },
-]
+];
 
 @NgModule({
   declarations: [
