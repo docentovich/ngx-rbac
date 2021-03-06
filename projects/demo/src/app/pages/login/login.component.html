@@ -1,5 +1,5 @@
 <ul>
   <li *ngFor="let user of (userList$ | async)">
-    <button class="app-button positive" type="button" (click)="login(user.id)" >Login as User: {{user.name}}</button>
+    <button class="app-button positive" type="button" (click)="login(user)" [disabled]="user.deleted" >Login as User: {{user.name}}</button>
   </li>
 </ul>

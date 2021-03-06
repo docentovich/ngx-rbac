@@ -8,8 +8,8 @@
         <a class="app-button neutral" [routerLink]="['/', 'edit', user.id]">
           Edit
         </a>
-        <button class="app-button negative" type="button" [disabled]="user.deleted" (click)="onDelete($event, user.id)">Delete</button>
-        <button class="app-button positive" type="button" [disabled]="!user.deleted " (click)="onRestore($event, user.id)">Restore</button>
+        <button class="app-button negative" type="button" *ngIf="appPermissions.canDelete | doCan: user" [disabled]="user.deleted" (click)="onDelete($event, user.id)">Delete</button>
+        <button class="app-button positive" type="button" *ngIf="appPermissions.canRestore | doCan: user" [disabled]="!user.deleted" (click)="onRestore($event, user.id)">Restore</button>
       </div>
     </a>
   </li>

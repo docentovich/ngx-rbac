@@ -1,12 +1,16 @@
+// RBAC
 import { AppPermissions } from './../../rbac/permissions';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+
+// Store
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { User } from './../../models/user';
 import { appActions } from './../../store/app.actions';
 import { AppState } from './../../store/app.reducer';
 import { selectUserEntities } from './../../store/app.selectors';
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { User } from './../../models/user';
 
 @Component({
   selector: 'app-profile',
@@ -32,7 +36,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.user = users[this.userId];
         })
       );
-    } else {
     }
   }
 

@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+// RBAC
+import { AppPermissions } from './../../rbac/permissions';
+
+// Store
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { User } from './../../models/user';
 import { appActions } from './../../store/app.actions';
 import { AppState } from './../../store/app.reducer';
 import { selectAllUsers } from './../../store/app.selectors';
+
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from './../../models/user';
 
 @Component({
   selector: 'app-list',
@@ -12,6 +17,7 @@ import { selectAllUsers } from './../../store/app.selectors';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent {
+  public appPermissions: typeof AppPermissions = AppPermissions;
   public userList$: Observable<User[]> = this.store.pipe(
     select(selectAllUsers)
   );

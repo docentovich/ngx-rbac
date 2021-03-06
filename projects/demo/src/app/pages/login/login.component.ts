@@ -1,12 +1,15 @@
-import { moderatorRole } from './../../rbac/roles';
+// RBAC
 import { DoGlobalRulesService } from '@doce/ngx-rbac';
+
+// Store
+import { select, Store } from '@ngrx/store';
 import { appActions } from './../../store/app.actions';
-import { selectAllUsers } from './../../store/app.selectors';
 import { AppState } from './../../store/app.reducer';
-import { User } from './../../models/user';
+import { selectAllUsers } from './../../store/app.selectors';
+
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { User } from './../../models/user';
 
 @Component({
   selector: 'app-login',
@@ -23,9 +26,8 @@ export class LoginComponent {
     private readonly doGlobalRulesService: DoGlobalRulesService
   ) {}
 
-  public login(userId: string): void {
-    this.store.dispatch(appActions.login({ payload: userId }));
-    console.log(this.doGlobalRulesService.changeRoles);
-    this.doGlobalRulesService.changeRoles([moderatorRole]);
+  public login(user: User): void {
+    this.store.dispatch(appActions.login({ payload: user.id }));
+    this.doGlobalRulesService.changeRoles([...user.roles]);
   }
 }

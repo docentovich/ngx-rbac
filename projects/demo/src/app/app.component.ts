@@ -1,17 +1,20 @@
+// RBAC
 import { moderatorRole, unauthorizedRole } from './rbac/roles';
 import { canSeeUserListPermission, AppPermissions } from './rbac/permissions';
-import { DoRoleType } from './../../../ngx-rbac/src/lib/type/do-role-type';
 import { AppRules, ruleSet } from './rbac/rules';
+import { DoGlobalRulesService, DoRoleType } from '@doce/ngx-rbac';
+
+// Store
 import { appActions } from './store/app.actions';
 import {
   selectCurrentUserId,
   selectCurrentUserRoles,
 } from './store/app.selectors';
 import { AppState } from './store/app.reducer';
+import { select, Store } from '@ngrx/store';
+
 import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { DoGlobalRulesService } from '@doce/ngx-rbac';
 import { tap } from 'rxjs/operators';
 
 @Component({

@@ -1,14 +1,26 @@
-import { DoRoleType } from './../../../../../ngx-rbac/src/lib/type/do-role-type';
-import { AppRoles, authorizedRole, moderatorRole, restoratorRole } from './../../rbac/roles';
+// RBAC
+import { DoGlobalRulesService, DoRoleType } from '@doce/ngx-rbac';
+import { AppPermissions } from './../../rbac/permissions';
+import {
+  AppRoles,
+  authorizedRole,
+  moderatorRole,
+  restoratorRole,
+} from './../../rbac/roles';
+
+// Store
+import { Store } from '@ngrx/store';
+import { appActions } from './../../store/app.actions';
+import { AppState } from './../../store/app.reducer';
+import { selectUserEntities } from './../../store/app.selectors';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { appActions } from './../../store/app.actions';
-import { AppState } from './../../store/app.reducer';
-import { selectUserEntities } from './../../store/app.selectors';
+
+
+
 
 @Component({
   selector: 'app-edit',
@@ -25,21 +37,25 @@ export class EditComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   constructor(
     private readonly store: Store<AppState>,
-    private readonly ar: ActivatedRoute
+    private readonly ar: ActivatedRoute,
+    private readonly doGlobalRulesService: DoGlobalRulesService
   ) {}
 
   ngOnInit() {
     this.userId = this.ar.snapshot.params.userId;
-    console.log('this.userId', this.userId);
     if (this.userId) {
       this.subscriptions.add(
         this.store.select(selectUserEntities).subscribe((users) => {
           const user = users[this.userId];
-          console.log('user', user);
           if (user) {
             this.formGroup = new FormGroup({
               name: new FormControl(user.name, Validators.required),
-              deleted: new FormControl(user.deleted),
+              deleted: new FormControl({
+                value: user.deleted,
+                disabled: user.deleted
+                  ? !this.doGlobalRulesService.can(AppPermissions.canRestore)
+                  : !this.doGlobalRulesService.can(AppPermissions.canDelete),
+              }),
               roles: new FormControl([...user.roles], Validators.required),
             });
           }
@@ -48,14 +64,16 @@ export class EditComponent implements OnInit, OnDestroy {
     } else {
       this.formGroup = new FormGroup({
         name: new FormControl('', Validators.required),
-        deleted: new FormControl(false),
+        deleted: new FormControl({
+          value: false,
+          disabled: !this.doGlobalRulesService.can(AppPermissions.canDelete),
+        }),
         roles: new FormControl(this.appRoles.authorized, Validators.required),
       });
     }
   }
 
   ngOnDestroy() {
-    console.log('destroy');
     this.subscriptions.unsubscribe();
   }
 
@@ -75,7 +93,7 @@ export class EditComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         appActions.addUser({
           payload: {
-            id: `${Math.floor(Math.random() * 10000)}`,
+            id: `${Math.floor(Math.random() * 100000)}`,
             name: this.formGroup.get('name').value,
             deleted: this.formGroup.get('deleted').value,
             roles: this.formGroup.get('roles').value,
