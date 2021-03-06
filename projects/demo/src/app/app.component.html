@@ -14,7 +14,7 @@
       <button class="app-button negative" *ngIf="appPermissions.canLogout | doCan" type="button" (click)="onLogout()">Logout</button>
     </div>
     <div class="main">
-      <router-outlet></router-outlet>
+      <router-outlet><div class="center"><h1>RBAC DEMO</h1></div></router-outlet>
     </div>
   </div>
 </do-provide-rules>
