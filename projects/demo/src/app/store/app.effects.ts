@@ -1,11 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DoGlobalRulesService } from '@doce/ngx-rbac';
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { Action } from "@ngrx/store";
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { unauthorizedRole } from './../rbac/roles';
 import { appActions } from './app.actions';
 
 @Injectable()
@@ -15,7 +14,8 @@ export class AppEffects {
       ofType(appActions.logout),
       tap(
         () => {
-          this.doGlobalRulesService.changeRoles([unauthorizedRole]);
+          this.doGlobalRulesService.changeRoles(null);
+          this.router.navigate(['.']);
         }
       )
     ), {
@@ -37,6 +37,9 @@ export class AppEffects {
     }
   );
 
-  constructor(private readonly actions$: Actions, private readonly router: Router,
-    private readonly doGlobalRulesService: DoGlobalRulesService) {}
+  constructor(
+    private readonly actions$: Actions,
+    private readonly router: Router,
+    private readonly doGlobalRulesService: DoGlobalRulesService,
+  ) {}
 }
