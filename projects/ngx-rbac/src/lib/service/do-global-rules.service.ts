@@ -79,6 +79,7 @@ export class DoGlobalRulesService {
   }
 
   changeRoles(roles: DoRoleType[]) {
+    roles = roles ?? [];
     this._permitted$.next(permitted(roles));
     this._roles$.next(roles);
   }
