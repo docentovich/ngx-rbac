@@ -4,8 +4,14 @@ import { DoRule } from './do-rule';
 import { DoRuleType } from '../type/do-rule-type';
 
 export class DoRolePermission implements DoRolePermissionType {
-  public can: DoStringDictionary<DoRuleType>;
-  public canNames: string[];
+  get canNames(): string[] {
+    return this._canNames;
+  }
+  get can(): DoStringDictionary<DoRuleType> {
+    return this._can;
+  }
+  private _can: DoStringDictionary<DoRuleType>;
+  private _canNames: string[];
   protected _canSelf: DoStringDictionary<DoRuleType>;
   protected _canNamesSelf: string[];
   public name: string;
