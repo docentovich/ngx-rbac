@@ -17,8 +17,8 @@ export const ruleSet = doCreateRuleSet({
   ], // The Rule only for users with unauthorized Role
   [AppRules.isAuthorized]: [
     AppRoles.authorized,
-    doNot(AppRoles.moderator),
-    doNot(AppRoles.restorator),
+    // doNot(AppRoles.moderator),
+    // doNot(AppRoles.restorator),
   ], // The Rule only for users with authorized Role
   [AppRules.isModerator]: [AppRoles.moderator], // The Rule only for users with moderator Role
   [AppRules.isRestorator]: [AppRoles.restorator], // The Rule only for users with restorator Role

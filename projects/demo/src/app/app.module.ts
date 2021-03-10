@@ -22,7 +22,7 @@ const routes: Route[] = [
     component: LoginComponent,
     data: {
       rules: [
-        ruleSet.isUnauthorized,
+        AppRules.isUnauthorized,
       ],
     },
     canActivate: [DoCanGuard],
@@ -31,7 +31,7 @@ const routes: Route[] = [
     path: 'list',
     component: ListComponent,
     data: {
-      rules: [ruleSet.isAuthorized, ruleSet.isModerator, ruleSet.isRestorator],
+      rules: [AppRules.isAuthorized],
     },
     canActivate: [DoCanGuard],
   },
@@ -39,7 +39,7 @@ const routes: Route[] = [
     path: 'profile/:userId',
     component: ProfileComponent,
     data: {
-      rules: [ruleSet.isAuthorized, ruleSet.isModerator, ruleSet.isRestorator],
+      rules: [AppRules.isAuthorized],
     },
     canActivate: [DoCanGuard],
   },
@@ -47,7 +47,7 @@ const routes: Route[] = [
     path: 'create',
     component: EditComponent,
     data: {
-      rules: [ruleSet.isModerator, ruleSet.isRestorator],
+      rules: [AppRules.isAuthorized],
     },
     canActivate: [DoCanGuard],
   },
@@ -55,7 +55,7 @@ const routes: Route[] = [
     path: 'edit/:userId',
     component: EditComponent,
     data: {
-      rules: [ruleSet.isModerator, ruleSet.isRestorator],
+      rules: [AppRules.isAuthorized],
     },
     canActivate: [DoCanGuard],
   },

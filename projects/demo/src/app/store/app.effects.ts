@@ -6,6 +6,7 @@ import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { appActions } from './app.actions';
+import { unauthorizedRole } from '../rbac/roles';
 
 @Injectable()
 export class AppEffects {
@@ -14,7 +15,7 @@ export class AppEffects {
       ofType(appActions.logout),
       tap(
         () => {
-          this.doGlobalRulesService.changeRoles(null);
+          this.doGlobalRulesService.changeRoles([unauthorizedRole]);
           this.router.navigate(['.']);
         }
       )
