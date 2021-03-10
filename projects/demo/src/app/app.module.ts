@@ -11,7 +11,7 @@ import { EditComponent } from './pages/edit/edit.component';
 import { ListComponent } from './pages/list/list.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { AppRules, ruleSet } from './rbac/rules';
+import { AppRules } from './rbac/rules';
 import { AppEffects } from './store/app.effects';
 import { reducer } from './store/app.reducer';
 
@@ -47,7 +47,7 @@ const routes: Route[] = [
     path: 'create',
     component: EditComponent,
     data: {
-      rules: [AppRules.isAuthorized],
+      rules: [AppRules.isEditor],
     },
     canActivate: [DoCanGuard],
   },
@@ -55,7 +55,7 @@ const routes: Route[] = [
     path: 'edit/:userId',
     component: EditComponent,
     data: {
-      rules: [AppRules.isAuthorized],
+      rules: [AppRules.isEditor],
     },
     canActivate: [DoCanGuard],
   },

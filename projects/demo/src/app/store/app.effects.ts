@@ -10,37 +10,59 @@ import { unauthorizedRole } from '../rbac/roles';
 
 @Injectable()
 export class AppEffects {
-  onLogout$: Observable<Action> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(appActions.logout),
-      tap(
-        () => {
+  onLogout$: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(appActions.logout),
+        tap(() => {
           this.doGlobalRulesService.changeRoles([unauthorizedRole]);
           this.router.navigate(['.']);
-        }
-      )
-    ), {
-      dispatch: false
+        })
+      ),
+    {
+      dispatch: false,
     }
   );
 
-  onLogin$: Observable<Action> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(appActions.login),
-      tap(
-        (action) => {
+  onLogin$: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(appActions.login),
+        tap((action) => {
           this.doGlobalRulesService.changeRoles([...action.payload.roles]);
-          this.router.navigate(['profile', action.payload.id]);
-        }
-      )
-    ), {
-      dispatch: false
+          this.router.navigate(['list']);
+        })
+      ),
+    {
+      dispatch: false,
+    }
+  );
+
+  onAddUser$: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(appActions.addUser),
+        tap(() => this.router.navigate(['list']))
+      ),
+    {
+      dispatch: false,
+    }
+  );
+
+  onEditUser$: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(appActions.editUser),
+        tap((action) => this.router.navigate(['profile', action.payload.id]))
+      ),
+    {
+      dispatch: false,
     }
   );
 
   constructor(
     private readonly actions$: Actions,
     private readonly router: Router,
-    private readonly doGlobalRulesService: DoGlobalRulesService,
+    private readonly doGlobalRulesService: DoGlobalRulesService
   ) {}
 }

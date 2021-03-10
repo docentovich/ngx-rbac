@@ -1,5 +1,6 @@
 // RBAC
 import { AppPermissions } from './../../rbac/permissions';
+import { AppRules } from './../../rbac/rules';
 
 // Store
 import { Store } from '@ngrx/store';
@@ -20,7 +21,8 @@ import { User } from './../../models/user';
 export class ProfileComponent implements OnInit, OnDestroy {
   public userId: string;
   public user: User;
-  public appPermissions: typeof AppPermissions = AppPermissions
+  public appPermissions: typeof AppPermissions = AppPermissions;
+  public appRules: typeof AppRules = AppRules;
 
   private subscriptions: Subscription = new Subscription();
   constructor(

@@ -35,6 +35,7 @@ export class EditComponent implements OnInit, OnDestroy {
   public restoratorRole: DoRoleType = restoratorRole;
   private appRoles: typeof AppRoles = AppRoles;
   private subscriptions: Subscription = new Subscription();
+
   constructor(
     private readonly store: Store<AppState>,
     private readonly ar: ActivatedRoute,

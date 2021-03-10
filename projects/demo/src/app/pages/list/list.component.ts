@@ -1,5 +1,6 @@
 // RBAC
 import { AppPermissions } from './../../rbac/permissions';
+import { AppRules } from './../../rbac/rules';
 
 // Store
 import { select, Store } from '@ngrx/store';
@@ -18,6 +19,7 @@ import { User } from './../../models/user';
 })
 export class ListComponent {
   public appPermissions: typeof AppPermissions = AppPermissions;
+  public appRules: typeof AppRules = AppRules;
   public userList$: Observable<User[]> = this.store.pipe(
     select(selectAllUsers)
   );
